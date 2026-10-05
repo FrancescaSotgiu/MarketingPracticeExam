@@ -1,1300 +1,403 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Marketing — Practice Exam</title>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Marketing — Advanced Practice Exam</title>
 <style>
-:root {
-  --navy: #0f1f5c;
-  --blue: #1e3a9f;
-  --accent: #2f5bea;
-  --accent-light: #5b7ff5;
-  --pale: #e8eeff;
-  --pale2: #f2f5ff;
-  --white: #ffffff;
-  --off: #f6f8ff;
-  --grey: #dde3f5;
-  --grey-mid: #8c9dc4;
-  --text: #0d1b4b;
-  --text2: #3a4f8a;
-  --correct: #16803c;
-  --correct-bg: #d1fae5;
-  --warn: #b45309;
-  --warn-bg: #fef3c7;
-  --r1: #2f5bea;   /* Product */
-  --r2: #7c3aed;   /* Price */
-  --r3: #0891b2;   /* Place */
-  --r4: #059669;   /* Promotion */
-  --r5: #dc2626;   /* Integration */
-  --r6: #9333ea;   /* Reflection */
+/* Layout: one calm reading column, Apple product-page rhythm. Start screen, then one question per screen with a sticky toolbar (timer, progress, score), then a review. */
+:root{
+  --bg:#ffffff; --band:#f5f5f7; --fg:#1d1d1f; --muted:#6e6e73; --line:#d2d2d7; --accent:#0066cc; --good:#1b7f3b; --navbg:rgba(251,251,253,.82);
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--off);
-  color: var(--text);
-  min-height: 100vh;
-}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#000;--band:#151517;--fg:#f5f5f7;--muted:#a1a1a6;--line:#38383a;--accent:#2997ff;--good:#4cc46f;--navbg:rgba(22,22,23,.82);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#000;--band:#151517;--fg:#f5f5f7;--muted:#a1a1a6;--line:#38383a;--accent:#2997ff;--good:#4cc46f;--navbg:rgba(22,22,23,.82);color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:17px;line-height:1.5;letter-spacing:-.016em;-webkit-font-smoothing:antialiased;margin:0}
+a{color:var(--accent)}
+button{font:inherit;cursor:pointer}
+button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{max-width:820px;margin:0 auto;padding-inline:22px}
+h1,h2,h3{margin:0;font-weight:600;text-wrap:balance}
+.muted{color:var(--muted)}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:980px;padding:11px 22px;font-size:17px}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--accent);padding:11px 4px}
+.btn.quiet{background:var(--band);color:var(--fg)}
+.btn[disabled]{opacity:.4;cursor:default}
 
-/* ── Particles ── */
-#bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-.dot {
-  position: absolute; border-radius: 50%;
-  background: var(--accent); opacity: .05;
-  animation: rise linear infinite;
-}
-@keyframes rise {
-  0%   { transform: translateY(110vh); opacity: 0; }
-  8%   { opacity: .05; }
-  92%  { opacity: .05; }
-  100% { transform: translateY(-40px); opacity: 0; }
-}
+/* start */
+#start .hero{padding-block:88px 40px}
+.eyebrow{font-size:17px;font-weight:600;color:var(--muted);margin:0 0 10px}
+#start h1{font-size:clamp(38px,6vw,60px);line-height:1.06;letter-spacing:-.02em}
+.lead{font-size:clamp(19px,2.2vw,21px);color:var(--muted);margin:18px 0 0;max-width:36em}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:40px 0}
+.fact{background:var(--band);border-radius:18px;padding:20px 22px}
+.fact b{display:block;font-size:28px;font-weight:600;font-variant-numeric:tabular-nums}
+.fact span{font-size:14px;color:var(--muted)}
+.sections{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.sections li{display:grid;grid-template-columns:1fr auto;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);font-size:16px}
+.sections li span:last-child{color:var(--muted);font-variant-numeric:tabular-nums}
+.how{margin:36px 0 0;font-size:15px;color:var(--muted);max-width:40em}
+.startrow{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin:36px 0 96px}
+@media (max-width:560px){.facts{grid-template-columns:1fr}}
 
-/* ── Screen wrapper ── */
-.screen {
-  position: relative; z-index: 1;
-  min-height: 100vh;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 40px 16px;
-}
-.hidden { display: none !important; }
+/* toolbar */
+.bar{position:sticky;top:55px;z-index:5;background:var(--navbg);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:52px;font-size:14px}
+.bar .t{font-weight:600}
+.timer{font-variant-numeric:tabular-nums;display:flex;gap:10px;align-items:center}
+.timer button{background:none;border:0;color:var(--accent);font-size:14px;padding:4px}
+.progress{height:2px;background:var(--line)}
+.progress i{display:block;height:100%;background:var(--fg);width:0;transition:width .3s}
+@media (prefers-reduced-motion:reduce){.progress i{transition:none}}
 
-/* ── Card ── */
-.card {
-  background: var(--white);
-  border-radius: 24px;
-  box-shadow: 0 2px 32px rgba(47,91,234,.10), 0 1px 4px rgba(47,91,234,.06);
-  padding: 52px 56px;
-  max-width: 820px;
-  width: 100%;
-}
-@media(max-width:640px){ .card{ padding: 32px 22px; } }
+/* question */
+.q{padding-block:48px 40px}
+.qmeta{display:flex;gap:12px;flex-wrap:wrap;font-size:14px;color:var(--muted);font-weight:600}
+.q h2{font-size:clamp(26px,3.6vw,34px);line-height:1.15;margin:10px 0 24px;letter-spacing:-.01em}
+.case{background:var(--band);border-radius:18px;padding:24px 26px;margin:0 0 24px;font-size:16px}
+.case p{margin:0 0 .8em}.case p:last-child{margin:0}
+.case table{border-collapse:collapse;margin:8px 0 4px;font-size:15px;font-variant-numeric:tabular-nums;width:100%}
+.case td,.case th{padding:6px 10px 6px 0;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+.case th{font-weight:600;font-size:13px;color:var(--muted)}
+.tw{overflow-x:auto}
+.ask{margin:0 0 20px;padding:0;list-style:none;counter-reset:a}
+.ask li{padding:10px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:36px 1fr auto;gap:8px}
+.ask li:first-child{border-top:1px solid var(--line)}
+.ask li::before{counter-increment:a;content:"(" counter(a,lower-alpha) ")";color:var(--muted);font-weight:600}
+.ask li em{font-style:normal;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+textarea{width:100%;min-height:220px;resize:vertical;font:inherit;font-size:16px;line-height:1.5;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:16px}
+.wc{font-size:13px;color:var(--muted);margin-top:6px;text-align:right}
+.reveal{margin-top:20px}
+.model{margin-top:20px;border-top:1px solid var(--line);padding-top:24px}
+.model h3{font-size:21px;margin-bottom:8px}
+.model .why{color:var(--muted);font-size:15px;margin:0 0 16px}
+.model .ans{font-size:16px}
+.model .ans p{margin:0 0 .9em}
+.model .ans b{font-weight:600}
+.calc{font-family:var(--mono);font-size:13.5px;background:var(--band);border-radius:12px;padding:14px 16px;overflow-x:auto;white-space:pre;line-height:1.6;margin:0 0 1em}
+.check{margin:20px 0 0;padding:20px 22px;border:1px solid var(--line);border-radius:18px}
+.check h4{margin:0 0 10px;font-size:15px;font-weight:600}
+.check label{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:start;padding:7px 0;font-size:15px;cursor:pointer}
+.check label em{font-style:normal;color:var(--muted);font-variant-numeric:tabular-nums;font-size:14px}
+.check input{margin-top:3px;width:16px;height:16px;accent-color:var(--fg)}
+.check .sum{border-top:1px solid var(--line);margin-top:10px;padding-top:10px;font-size:15px;display:flex;justify-content:space-between}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:32px 96px}
 
-/* ── Logo bar ── */
-.logo-bar { display:flex; align-items:center; gap:14px; margin-bottom:8px; }
-.logo-bar img { height:50px; object-fit:contain; }
-.logo-divider { width:1px; height:38px; background:var(--grey); flex-shrink:0; }
-.logo-label {
-  font-size:11.5px; font-weight:500; letter-spacing:.12em;
-  text-transform:uppercase; color:var(--grey-mid); line-height:1.45;
-}
-
-/* ── Typography ── */
-.eyebrow {
-  display:block; font-size:11px; font-weight:700;
-  letter-spacing:.2em; text-transform:uppercase;
-  color:var(--accent); margin-bottom:14px;
-}
-h1 {
-  font-family:'Syne',sans-serif; font-weight:800;
-  font-size:clamp(46px,7vw,76px); line-height:.98;
-  color:var(--text); margin-bottom:22px;
-}
-h1 span { color:var(--accent); }
-h2 {
-  font-family:'Syne',sans-serif; font-weight:700;
-  font-size:clamp(18px,3vw,26px); color:var(--text);
-  margin-bottom:10px;
-}
-.subtitle {
-  font-size:15.5px; color:var(--text2); line-height:1.7;
-  margin-bottom:28px; max-width:600px;
-}
-
-/* ── Pills ── */
-.pill-row { display:flex; flex-wrap:wrap; gap:9px; margin-bottom:34px; }
-.pill {
-  background:var(--grey); color:var(--text2);
-  font-size:12.5px; font-weight:500; border-radius:100px;
-  padding:6px 16px; display:flex; align-items:center; gap:6px;
-}
-
-/* ── Buttons ── */
-.btn {
-  display:inline-flex; align-items:center; gap:9px;
-  font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600;
-  border:none; border-radius:50px; padding:15px 34px;
-  cursor:pointer; transition:.2s;
-  text-decoration:none;
-}
-.btn-primary { background:var(--navy); color:#fff; }
-.btn-primary:hover { background:var(--accent); transform:translateY(-2px); box-shadow:0 8px 22px rgba(47,91,234,.28); }
-.btn-secondary {
-  background:var(--white); color:var(--navy);
-  border:2px solid var(--grey);
-}
-.btn-secondary:hover { border-color:var(--accent); background:var(--pale); transform:translateY(-1px); }
-.btn-sm { padding:10px 22px; font-size:13.5px; }
-
-/* ── Section header strip ── */
-.section-strip {
-  border-radius:14px; padding:20px 26px;
-  margin-bottom:28px;
-  display:flex; align-items:center; gap:16px;
-}
-.strip-icon {
-  width:46px; height:46px; border-radius:12px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:22px; flex-shrink:0;
-}
-.strip-title {
-  font-family:'Syne',sans-serif; font-weight:700;
-  font-size:17px; line-height:1.2;
-}
-.strip-sub { font-size:12.5px; margin-top:3px; opacity:.75; }
-
-/* ── Progress ── */
-.prog-wrap { margin-bottom:30px; }
-.prog-meta { display:flex; justify-content:space-between; font-size:12.5px; font-weight:500; color:var(--text2); margin-bottom:7px; }
-.prog-track { background:var(--grey); border-radius:99px; height:5px; overflow:hidden; }
-.prog-fill { height:100%; border-radius:99px; transition:width .5s cubic-bezier(.4,0,.2,1); }
-
-/* ── Question ── */
-.q-meta { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
-.q-tag {
-  font-size:10.5px; font-weight:700; letter-spacing:.16em;
-  text-transform:uppercase; padding:4px 12px;
-  border-radius:100px;
-}
-.q-pts { font-size:12px; color:var(--grey-mid); font-weight:500; }
-.q-text {
-  font-size:18.5px; font-weight:500; line-height:1.58;
-  color:var(--text); margin-bottom:24px;
-}
-.q-context {
-  background:var(--pale2); border-left:4px solid var(--accent);
-  border-radius:10px; padding:16px 20px;
-  font-size:13.5px; line-height:1.65; color:var(--text2);
-  margin-bottom:22px;
-  font-style:italic;
-}
-.q-context strong { font-style:normal; color:var(--text); }
-
-/* ── Answer textarea ── */
-.answer-wrap { position:relative; margin-bottom:18px; }
-textarea {
-  width:100%; min-height:160px;
-  background:var(--off); border:2px solid var(--grey);
-  border-radius:14px; padding:18px 20px;
-  font-family:'DM Sans',sans-serif; font-size:14.5px;
-  line-height:1.65; color:var(--text);
-  resize:vertical; outline:none;
-  transition:border-color .2s;
-}
-textarea:focus { border-color:var(--accent); background:var(--white); }
-textarea::placeholder { color:var(--grey-mid); }
-.char-count { font-size:11.5px; color:var(--grey-mid); text-align:right; margin-top:5px; }
-
-/* ── Model answer ── */
-.model-answer {
-  margin-top:22px;
-  border:2px solid var(--grey);
-  border-radius:16px; overflow:hidden;
-  animation: fadeUp .35s ease both;
-}
-@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
-.ma-header {
-  padding:14px 20px;
-  display:flex; align-items:center; justify-content:space-between;
-  cursor:pointer;
-  user-select:none;
-}
-.ma-header-left { display:flex; align-items:center; gap:10px; }
-.ma-badge {
-  font-size:10px; font-weight:700; letter-spacing:.14em;
-  text-transform:uppercase; padding:4px 12px;
-  border-radius:100px; background:var(--correct-bg); color:var(--correct);
-}
-.ma-title { font-size:14px; font-weight:600; color:var(--text); }
-.ma-arrow { font-size:12px; color:var(--grey-mid); transition:transform .2s; }
-.ma-body {
-  padding:0 20px 20px;
-  display:none;
-}
-.model-answer.open .ma-body { display:block; }
-.model-answer.open .ma-arrow { transform:rotate(180deg); }
-
-.ma-section { margin-bottom:16px; }
-.ma-section-title {
-  font-size:11px; font-weight:700; letter-spacing:.14em;
-  text-transform:uppercase; color:var(--accent);
-  margin-bottom:8px;
-}
-.ma-text {
-  font-size:14px; line-height:1.7; color:var(--text2);
-}
-.ma-text strong { color:var(--text); }
-.ma-text em { font-style:italic; color:var(--text2); }
-
-.rubric-grid {
-  display:grid; grid-template-columns:1fr 1fr;
-  gap:10px; margin-top:10px;
-}
-@media(max-width:560px){ .rubric-grid{ grid-template-columns:1fr; } }
-.rubric-item {
-  background:var(--off); border-radius:10px;
-  padding:12px 14px; border-left:3px solid var(--accent);
-}
-.rubric-item .ri-label { font-size:10.5px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:.12em; margin-bottom:5px; }
-.rubric-item .ri-text { font-size:13px; line-height:1.55; color:var(--text2); }
-
-.key-concepts {
-  display:flex; flex-wrap:wrap; gap:7px; margin-top:8px;
-}
-.concept-chip {
-  background:var(--pale); color:var(--blue);
-  font-size:12px; font-weight:500;
-  padding:4px 12px; border-radius:100px;
-}
-
-/* ── Self-assess ── */
-.self-assess {
-  background:var(--warn-bg); border-radius:12px;
-  padding:14px 18px; margin-top:16px;
-  font-size:13px; color:var(--warn); font-weight:500;
-  display:flex; gap:10px; align-items:flex-start;
-}
-
-/* ── Navigation ── */
-.nav-row {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-top:32px; flex-wrap:wrap; gap:12px;
-}
-
-/* ── Section nav menu ── */
-.section-nav {
-  display:flex; flex-wrap:wrap; gap:8px; margin-bottom:30px;
-}
-.snav-btn {
-  font-size:12px; font-weight:600; padding:8px 16px;
-  border-radius:100px; border:2px solid var(--grey);
-  background:var(--white); color:var(--text2); cursor:pointer;
-  transition:.18s;
-}
-.snav-btn:hover { border-color:var(--accent); color:var(--accent); }
-.snav-btn.active { background:var(--navy); color:#fff; border-color:var(--navy); }
-
-/* ── Score / results ── */
-.score-row {
-  display:flex; justify-content:center; gap:18px; flex-wrap:wrap;
-  margin-bottom:28px;
-}
-.score-tile {
-  background:var(--navy);
-  border-radius:18px; padding:20px 28px;
-  text-align:center; min-width:110px;
-}
-.score-tile .st-num {
-  font-family:'Syne',sans-serif; font-weight:800;
-  font-size:34px; color:#fff; line-height:1;
-}
-.score-tile .st-label { font-size:11px; color:rgba(255,255,255,.6); font-weight:500; margin-top:4px; }
-.score-tile.accent { background:linear-gradient(135deg,var(--blue),var(--accent)); }
-
-.final-badge {
-  background:linear-gradient(135deg,var(--pale),#dde8ff);
-  border-radius:18px; padding:28px 32px;
-  text-align:center; margin-bottom:26px;
-}
-.fb-icon { font-size:52px; margin-bottom:8px; }
-.fb-name { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:var(--navy); margin-bottom:6px; }
-.fb-desc { font-size:14px; color:var(--text2); line-height:1.55; }
-
-/* ── Review list ── */
-.review-sec { margin-bottom:14px; }
-.review-sec-title {
-  font-family:'Syne',sans-serif; font-size:13px; font-weight:700;
-  color:var(--text2); text-transform:uppercase; letter-spacing:.1em;
-  margin-bottom:8px; padding-bottom:6px;
-  border-bottom:1.5px solid var(--grey);
-}
-.review-item {
-  border:1.5px solid var(--grey); border-radius:12px;
-  margin-bottom:8px; overflow:hidden;
-}
-.review-toggle {
-  width:100%; background:none; border:none;
-  padding:14px 18px; text-align:left;
-  display:flex; align-items:center; gap:10px;
-  cursor:pointer; font-size:13.5px; font-weight:500; color:var(--text);
-}
-.review-toggle .rt-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-.rt-done { background:var(--correct); }
-.rt-skip { background:var(--grey-mid); }
-.review-body { display:none; padding:0 18px 16px; }
-.review-item.open .review-body { display:block; }
-.review-arrow-r { margin-left:auto; font-size:11px; color:var(--grey-mid); transition:transform .2s; }
-.review-item.open .review-arrow-r { transform:rotate(180deg); }
-
-/* ── Special: last Q textarea (reflection) ── */
-.reflection-box {
-  background:linear-gradient(135deg,#0f1f5c 0%,#1e3a9f 100%);
-  border-radius:18px; padding:28px 30px; margin-bottom:24px; color:#fff;
-}
-.reflection-box .rb-label {
-  font-size:10px; font-weight:700; letter-spacing:.2em;
-  text-transform:uppercase; color:rgba(255,255,255,.55);
-  margin-bottom:8px; display:block;
-}
-.reflection-box .rb-title {
-  font-family:'Syne',sans-serif; font-size:18px; font-weight:700;
-  margin-bottom:10px;
-}
-.reflection-box .rb-body {
-  font-size:13.5px; line-height:1.7; color:rgba(255,255,255,.82);
-}
-
-/* ── Fade transition ── */
-.fade-in { animation: fadeUp .4s ease both; }
-
-/* ── Timer bar ── */
-.timer-wrap {
-  display:flex; align-items:center; gap:12px;
-  margin-bottom:24px;
-}
-.timer-label { font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--text2); white-space:nowrap; }
-.timer-display {
-  font-family:'Syne',sans-serif; font-size:22px; font-weight:800;
-  color:var(--navy); min-width:90px;
-}
-.timer-display.warning { color:#dc2626; animation: pulse 1s ease infinite; }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.55} }
-
-/* ── Divider ── */
-.divider { height:1px; background:var(--grey); margin:24px 0; }
-</style>
-<style id="vu-apple">
-:root{--blue-dark:#1d1d1f;--blue-mid:#0066cc;--blue-light:#0066cc;--blue-pale:#f5f5f7;--off-white:#f5f5f7;--grey-light:#e5e5ea;--grey-mid:#6e6e73;--text-dark:#1d1d1f;--text-mid:#424245;--accent:#0066cc;--navy:#1d1d1f;--blue:#0066cc;--accent-light:#0066cc;--pale:#f5f5f7;--pale2:#f5f5f7;--off:#f5f5f7;--grey:#e5e5ea;--text:#1d1d1f;--text2:#424245;--r1:#0066cc;--r2:#0066cc;--r3:#0066cc;--r4:#0066cc;--r5:#0066cc;--r6:#0066cc}
-*{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif!important}
-body{background:#f5f5f7!important;color:#1d1d1f!important;-webkit-font-smoothing:antialiased;letter-spacing:-.012em}
-#particles,#bg,#bg-glow-1,#bg-glow-2,.dot{display:none!important}
-.logo-bar,.footer-attribution,.footer-credit,.old-credit{display:none!important}
-h1,.hero-title{background:none!important;-webkit-text-fill-color:currentColor!important;color:#1d1d1f!important;font-weight:600!important;letter-spacing:-.02em!important;line-height:1.05!important}
-h1 span{color:#1d1d1f!important}
-h2,h3,.game-brand,.syne{font-weight:600!important;letter-spacing:-.01em!important}
-.game-brand,.game-brand.purple{color:#1d1d1f!important;background:none!important;-webkit-text-fill-color:currentColor!important}
-.label-tag,.eyebrow,.cat-tag,.q-tag{letter-spacing:0!important;text-transform:none!important;font-weight:600!important}
-.label-tag,.eyebrow{color:#6e6e73!important;font-size:15px!important}
-.card{box-shadow:none!important;border:1px solid #e5e5ea!important;border-radius:18px!important;background:#fff!important}
-.btn-primary,.btn-primary.purple,.btn-next,.btn-next.purple{background:#0066cc!important;color:#fff!important;border:0!important;border-radius:980px!important;box-shadow:none!important;font-weight:500!important;background-image:none!important}
-.btn-primary:hover,.btn-next:hover{filter:brightness(1.08);transform:none!important}
-.pill{background:#fff!important;border:1px solid #e5e5ea!important;color:#1d1d1f!important}
-.progress-bar-fill,.progress-bar-fill.purple,.progress-fill,.prog-fill{background:#1d1d1f!important;background-image:none!important}
-.scenario-box,.case-box,.between-box,.q-context,.lessons-box{box-shadow:none!important;border-radius:14px!important}
-.vu-head{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 22px;background:rgba(255,255,255,.86);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid #e5e5ea}
-.vu-head img{height:34px;width:auto;display:block}
-.vu-credit{text-align:right;font-size:13px;line-height:1.35;color:#6e6e73}
-.vu-credit b{display:block;color:#1d1d1f;font-weight:600;font-size:14px}
-@media (max-width:520px){.vu-head{justify-content:center;text-align:center}.vu-credit{text-align:center}}
+/* review */
+.rev{padding-block:64px 96px}
+.rev h1{font-size:clamp(34px,5vw,48px);letter-spacing:-.015em}
+.score{font-size:clamp(56px,10vw,96px);font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:24px 0 4px}
+.rows{list-style:none;margin:32px 0 0;padding:0;border-top:1px solid var(--line)}
+.rows li{display:grid;grid-template-columns:1fr auto;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);font-size:16px}
+.rows li span:last-child{font-variant-numeric:tabular-nums;color:var(--muted)}
+.rows li button{background:none;border:0;color:var(--accent);padding:0;text-align:left;font-size:16px}
+.band-note{margin-top:32px;font-size:15px;color:var(--muted);max-width:40em}
+.brandrow{margin-bottom:28px}
+.vulogo{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:22px;letter-spacing:-.02em;color:var(--fg)}
+.vulogo span{font-size:13px;font-weight:600;letter-spacing:0;border-left:1px solid var(--line);padding-left:10px}
+.credit{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between}
+.credit .vulogo{font-size:16px}
+footer{border-top:1px solid var(--line);padding-block:20px;font-size:12px;color:var(--muted)}
+.vu-head{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 22px;background:var(--navbg);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
+.vu-head img{height:34px;width:auto;display:block;background:#fff;border-radius:6px;padding:2px 4px}
 .vu-right{display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:flex-end}
 .vu-nav{display:flex;gap:14px;align-items:center;font-size:14px}
-.vu-nav a{color:#0066cc;text-decoration:none}
+.vu-nav a{color:var(--accent);text-decoration:none}
 .vu-nav a:hover{text-decoration:underline}
-.vu-nav button{font:inherit;font-size:14px;background:#f5f5f7;color:#1d1d1f;border:1px solid #d2d2d7;border-radius:980px;padding:5px 12px;cursor:pointer}
+.vu-nav button{font:inherit;font-size:14px;background:var(--band);color:var(--fg);border:1px solid var(--line);border-radius:980px;padding:5px 12px;cursor:pointer}
 @media (max-width:520px){.vu-right{justify-content:center}}
-</style>
-</head>
-<body>
+.vu-credit{text-align:right;font-size:13px;line-height:1.35;color:var(--muted)}
+.vu-credit b{display:block;color:var(--fg);font-weight:600;font-size:14px}
+@media (max-width:520px){.vu-head{justify-content:center}.vu-credit{text-align:center}.bar{top:132px}}
+</style></head><body>
 <header class="vu-head"><img src="vu-logo.png" alt="Vrije Universiteit Amsterdam"><div class="vu-right"><nav class="vu-nav"><a href="https://francescasotgiu.com/#teaching">All quizzes</a><button type="button" onclick="try{localStorage.clear()}catch(e){};location.href=location.pathname">Restart</button></nav><div class="vu-credit"><b>Prof. Francesca Sotgiu</b>Developed for the VU Marketing course 2026</div></div></header>
 
-
-<div id="bg"></div>
-
-<!-- ═══════════════════════════════════════════
-     SCREEN: LANDING
-═══════════════════════════════════════════ -->
-<div class="screen" id="s-landing">
-<div class="card fade-in">
-  <div class="logo-bar">
-    <img src="https://assets.vu.nl/d8b6f1f5-816c-005b-1dc1-e363dd7ce9a5/09d63f26-cdad-4bca-be03-1d0e7b9baf2b/VU_logo_transparant_jpg.jpg"
-         alt="VU Amsterdam" onerror="this.style.display='none'">
-    <div class="logo-divider"></div>
-    <div class="logo-label">Marketing — Open Book Exam<br>Vrije Universiteit Amsterdam</div>
-  </div>
-
-  <span class="eyebrow">Practice Exam — The 4 Ps of Marketing</span>
-  <h1>The 4 Ps<br><span>Exam</span></h1>
-  <p class="subtitle">
-    A 2-hour open-book practice exam based on <em>Principles of Marketing</em> (Kotler &amp; Armstrong).
-    Six sections covering Product, Price, Place, Promotion, Integration — and one final reflection.
-    Each question demands real managerial thinking, not just recall.
-  </p>
-
-  <div class="pill-row">
-    <div class="pill">Section 1 — Product</div>
-    <div class="pill">Section 2 — Price</div>
-    <div class="pill">Section 3 — Place</div>
-    <div class="pill">Section 4 — Promotion</div>
-    <div class="pill">Section 5 — Integration</div>
-    <div class="pill">Section 6 — Reflection</div>
-  </div>
-
-  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:28px;">
-    <div style="background:var(--pale2);border-radius:12px;padding:12px 18px;font-size:13px;color:var(--text2);">
-      <strong>120 minutes</strong> — Open Book
+<div id="start">
+  <div class="wrap hero">
+    <div class="brandrow"><span class="vulogo" aria-label="Vrije Universiteit Amsterdam">VU<span>Vrije Universiteit Amsterdam</span></span></div>
+    <p class="eyebrow">Marketing · Advanced practice exam</p>
+    <h1>Marketing decisions at Kern.</h1>
+    <p class="lead">An advanced open-book practice exam for professionals. All cases follow Kern, a fictional chain of physiotherapy, sport and wellness centres. You will segment its customers, price its membership, value a member, judge whether a campaign really worked, and defend a channel decision to your board.</p>
+    <div class="facts">
+      <div class="fact"><b>120</b><span>minutes, open book</span></div>
+      <div class="fact"><b>8</b><span>case questions</span></div>
+      <div class="fact"><b>100</b><span>points in total</span></div>
     </div>
-    <div style="background:var(--pale2);border-radius:12px;padding:12px 18px;font-size:13px;color:var(--text2);">
-      <strong>11 questions</strong> — 100 points total
-    </div>
-    <div style="background:var(--pale2);border-radius:12px;padding:12px 18px;font-size:13px;color:var(--text2);">
-      Model answers revealed after each question
+    <ul class="sections" id="toc"></ul>
+    <p class="how">Write your answer first, then open the model answer. Score yourself honestly with the checklist under each model answer; your total appears at the end. A calculator is useful for questions 2 to 4. Your answers stay in this browser only and are not sent anywhere.</p>
+    <div class="startrow">
+      <button class="btn" id="go" type="button">Begin exam</button>
+      <span class="muted" style="font-size:14px">Developed by <a href="https://francescasotgiu.com" style="color:inherit;font-weight:600">Francesca Sotgiu</a> for the VU Marketing course 2026</span>
     </div>
   </div>
+</div>
 
-  <div style="background:var(--warn-bg);border-radius:14px;padding:16px 20px;margin-bottom:28px;font-size:13.5px;color:var(--warn);line-height:1.65;">
-    <strong>How to use this practice exam:</strong> Write your answer in the text box, then reveal the Model Answer to compare. 
-    Use the self-assessment checklist to identify gaps. The timer helps simulate real exam conditions.
+<div id="exam" hidden>
+  <div class="bar">
+    <div class="wrap">
+      <span class="t" id="qpos">Question 1 of 8</span>
+      <span class="timer"><span id="clock">2:00:00</span><button type="button" id="pause">Pause</button></span>
+      <span id="pts">0 / 100</span>
+    </div>
+    <div class="progress"><i id="prog"></i></div>
   </div>
-
-  <button class="btn btn-primary" onclick="startExam()">Begin Exam →</button>
-
-  <div class="old-credit">x</div>
-</div>
-</div>
-
-<!-- ═══════════════════════════════════════════
-     SCREEN: EXAM
-═══════════════════════════════════════════ -->
-<div class="screen hidden" id="s-exam">
-<div class="card fade-in">
-
-  <!-- Logo -->
-  <div class="logo-bar" style="margin-bottom:18px;">
-    <img src="https://assets.vu.nl/d8b6f1f5-816c-005b-1dc1-e363dd7ce9a5/09d63f26-cdad-4bca-be03-1d0e7b9baf2b/VU_logo_transparant_jpg.jpg"
-         alt="VU" style="height:36px;" onerror="this.style.display='none'">
-    <div class="logo-divider"></div>
-    <div class="logo-label">Marketing — 4Ps Exam</div>
-    <div style="margin-left:auto;display:flex;align-items:center;gap:8px;">
-      <div class="timer-display" id="timer-display">2:00:00</div>
+  <div class="wrap">
+    <article class="q" id="q"></article>
+    <div class="nav">
+      <button class="btn quiet" id="prev" type="button">Previous</button>
+      <button class="btn" id="next" type="button">Next</button>
     </div>
   </div>
+</div>
 
-  <!-- Section navigation -->
-  <div class="section-nav" id="sec-nav"></div>
-
-  <!-- Progress -->
-  <div class="prog-wrap">
-    <div class="prog-meta">
-      <span id="prog-label">Question 1 of 11</span>
-      <span id="prog-pts">0 / 100 pts</span>
+<div id="review" hidden>
+  <div class="wrap rev">
+    <p class="eyebrow">Exam complete</p>
+    <h1>Your self-assessed score</h1>
+    <div class="score" id="final">0</div>
+    <p class="muted" id="finalsub">out of 100</p>
+    <ul class="rows" id="revrows"></ul>
+    <p class="band-note" id="bandnote"></p>
+    <div class="startrow">
+      <button class="btn" id="back" type="button">Review questions</button>
+      <button class="btn ghost" id="restart" type="button">Start again</button>
     </div>
-    <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
   </div>
-
-  <!-- Question area -->
-  <div id="q-area"></div>
-
-  <!-- Nav -->
-  <div class="nav-row">
-    <button class="btn btn-secondary btn-sm" id="btn-prev" onclick="goQ(-1)">← Previous</button>
-    <span id="q-counter" style="font-size:13px;color:var(--grey-mid);font-weight:500;"></span>
-    <button class="btn btn-primary btn-sm" id="btn-next" onclick="goQ(1)">Next →</button>
-  </div>
-
-</div>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     SCREEN: RESULTS
-═══════════════════════════════════════════ -->
-<div class="screen hidden" id="s-results">
-<div class="card fade-in">
-
-  <div class="logo-bar" style="margin-bottom:20px;">
-    <img src="https://assets.vu.nl/d8b6f1f5-816c-005b-1dc1-e363dd7ce9a5/09d63f26-cdad-4bca-be03-1d0e7b9baf2b/VU_logo_transparant_jpg.jpg"
-         alt="VU" style="height:38px;" onerror="this.style.display='none'">
-    <div class="logo-divider"></div>
-    <div class="logo-label">Exam Complete — Review Your Answers</div>
-  </div>
-
-  <span class="eyebrow">Results</span>
-  <h2 style="margin-bottom:20px;">Exam Complete</h2>
-
-  <div class="score-row" id="score-row"></div>
-  <div class="final-badge" id="final-badge"></div>
-
-  <p style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:24px;">
-    Below you can review all questions alongside the model answers. Use this to identify which 
-    sections of the 4Ps framework need more attention before your real exam.
-  </p>
-
-  <div id="review-area"></div>
-
-  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:28px;">
-    <button class="btn btn-primary" onclick="restartExam()">↺ Retake Exam</button>
-    <button class="btn btn-secondary" onclick="showScreen('s-landing')">← Back to Start</button>
-  </div>
-
-  <div class="old-credit">x</div>
-</div>
-</div>
+<footer><div class="wrap credit"><span class="vulogo" aria-label="Vrije Universiteit Amsterdam">VU<span>Vrije Universiteit Amsterdam</span></span><span>Developed by <a href="https://francescasotgiu.com" style="color:inherit;font-weight:600">Francesca Sotgiu</a> for the VU Marketing course 2026 · Practice material, not an official exam.</span></div></footer>
 
 <script>
-// ═══════════════════════════
-// PARTICLES
-// ═══════════════════════════
-(function(){
-  const bg = document.getElementById('bg');
-  for(let i=0;i<16;i++){
-    const d = document.createElement('div');
-    d.className = 'dot';
-    const s = Math.random()*90+20;
-    d.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;animation-duration:${Math.random()*18+10}s;animation-delay:${Math.random()*-28}s;`;
-    bg.appendChild(d);
-  }
-})();
+const Q = [
+{
+  id:'q1', section:'Customers and segmentation', pts:12,
+  title:'Who should Kern’s new “Back in the Game” programme serve?',
+  caseHtml:`<p><b>Kern</b> is a fictional chain of 12 physiotherapy, sport and wellness centres in the Netherlands (revenue €14m). Today it sells three things separately: physiotherapy sessions, gym memberships and group classes. The new CEO wants to launch <b>“Back in the Game”</b>: a 12-week programme combining physiotherapy, coached training and an app, for one monthly fee.</p>
+  <p>The marketing team proposes to segment the market as it always has: by age group (under 35, 35 to 55, over 55) and by gender.</p>
+  <div class="tw"><table><tr><th>What the pilot interviews (n = 40) showed</th></tr>
+  <tr><td>Recreational athletes with a recent injury (runners, padel and football players) are impatient to return and willing to pay well above the insurance-covered amount.</td></tr>
+  <tr><td>Office workers with back or neck complaints mostly want flexible evening slots; about half have an employer wellness budget they never use.</td></tr>
+  <tr><td>People over 65 value personal contact and are loyal, but prefer to pay per session.</td></tr>
+  <tr><td>Serious amateur athletes already work with a private coach and only want testing and injury prevention.</td></tr></table></div>`,
+  ask:[['Explain why age × gender is a weak basis for segmenting this offer. Propose a needs-based segmentation with two or three variables, and name the segments.',4],
+       ['Choose one target segment for the launch and justify the choice with the four tests of a good segment (measurable, substantial, accessible, actionable) and with Kern’s ability to win.',5],
+       ['Name one segment Kern should deliberately not target in year one, and why.',3]],
+  placeholder:'(a) …\n(b) …\n(c) …',
+  why:'Tests whether you can segment on the benefit a customer buys, not on how a customer is listed in a database.',
+  model:`<p><b>(a)</b> Age and gender describe who the customer is, not why they would buy a combined programme. Two 40-year-olds can want completely different things: one tore a calf muscle playing padel, the other has a stiff neck from desk work. The pilot shows that value is driven by <b>urgency of the goal</b> (getting back to a sport quickly versus general comfort), <b>who pays</b> (own pocket, insurer, employer) and <b>preferred format</b> (structured programme versus pay per session). A workable needs-based scheme:</p>
+  <p>• <b>“Injured and impatient”</b>: recent sports injury, clear goal, pays privately.<br>• <b>“Desk-bound and busy”</b>: chronic complaints, needs flexible times, employer budget available.<br>• <b>“Steady and loyal”</b>: older clients who want personal contact and per-session payment.<br>• <b>“Performance tuners”</b>: serious athletes who want testing and prevention, not rehab.</p>
+  <p><b>(b)</b> Strong answers pick <b>injured and impatient</b>. It is <i>measurable</i> (intake forms record injury and sport), <i>substantial</i> (Kern sees many sports injuries, and willingness to pay is high), <i>accessible</i> (sports clubs, running events, padel centres, Strava and club newsletters) and <i>actionable</i> (a 12-week programme with a clear “back to sport” goal maps directly onto the need). Kern can win because it combines physiotherapy and coached training under one roof, which neither a gym nor a stand-alone physio can offer. A defensible alternative is “desk-bound and busy” via employers, if argued with evidence on deal size and sales effort.</p>
+  <p><b>(c)</b> Avoid <b>“steady and loyal”</b> for this programme: they prefer to pay per session and value the personal relationship more than a structured package, so the offer does not fit their need. Also defensible: performance tuners, who already have coaches and want only a small part of the programme.</p>`,
+  rubric:[['Explains that demographics do not capture the reason to buy',2],['Uses at least two needs-based variables drawn from the pilot evidence',2],['Chooses one segment and applies all four tests explicitly',3],['Links the choice to a Kern capability (physio and training under one roof)',2],['Names a segment to avoid with a clear reason',3]]
+},
+{
+  id:'q2', section:'Pricing', pts:15,
+  title:'Should Kern raise the price of its membership?',
+  caseHtml:`<p>Kern’s all-in membership (gym, classes and one physio check per quarter) has these figures:</p>
+  <div class="tw"><table><tr><th>Item</th><th>Value</th></tr>
+  <tr><td>Price per member per month</td><td>€60</td></tr>
+  <tr><td>Variable cost per member per month (staff time, towels, app, physio checks)</td><td>€36</td></tr>
+  <tr><td>Members</td><td>5,000</td></tr>
+  <tr><td>Estimated price elasticity of demand</td><td>−1.5</td></tr></table></div>
+  <p>Without Kern, a typical member would pay for a budget gym (€35 per month) plus physiotherapy not covered by insurance (on average €30 per month). In a member survey, the convenience of one coordinated plan, with physio and trainers who talk to each other, was valued at about €15 per month.</p>`,
+  ask:[['Calculate the contribution margin per member and in total per month.',2],['Calculate how many members Kern can lose before a 10% price increase reduces total contribution. Then calculate how many members a 10% price cut would need to gain to keep total contribution unchanged.',4],['Using the elasticity, estimate total monthly contribution after a 10% increase and after a 10% cut. What do you recommend?',4],['Estimate the economic value to the customer (EVC) of the membership. What does it tell you about the current price?',3],['Give two reasons why the elasticity estimate could mislead management here.',2]],
+  placeholder:'Show your calculations.\n(a) …',
+  why:'Tests break-even pricing logic, elasticity and value-based pricing, the three tools managers mix up most often.',
+  model:`<p><b>(a)</b> Contribution per member = €60 − €36 = <b>€24</b> (40% margin). Total = 5,000 × €24 = <b>€120,000 per month</b>.</p>
+  <div class="calc">(b) Price +10%: new price €66, new contribution €30
+    break-even volume change = −ΔP / (CM + ΔP) = −6 / 30 = −20%
+    Kern can lose up to 20% of members (1,000) and still be no worse off.
 
-// ═══════════════════════════
-// EXAM DATA
-// ═══════════════════════════
-const SECTIONS = [
-  { id:'product',    label:'Product',   color:'#2f5bea', pts:20 },
-  { id:'price',      label:'Price',      color:'#7c3aed', pts:15 },
-  { id:'place',      label:'Place',      color:'#0891b2', pts:15 },
-  { id:'promotion',  label:'Promotion',  color:'#059669', pts:20 },
-  { id:'integration',label:'Integration',color:'#dc2626', pts:20 },
-  { id:'reflection', label:'Reflection', color:'#9333ea', pts:10 },
+    Price −10%: new price €54, new contribution €18
+    required volume change = 24 / 18 − 1 = +33.3%
+    Kern must win 1,667 extra members just to stand still.</div>
+  <div class="calc">(c) Elasticity −1.5
+    +10% price → −15% members → 4,250 × €30 = €127,500  (+€7,500 per month)
+    −10% price → +15% members → 5,750 × €18 = €103,500  (−€16,500 per month)</div>
+  <p>Recommendation: <b>raise the price</b>. The expected loss (15%) is below the break-even loss (20%), and a cut destroys contribution because the required gain (33%) is far above what the market will deliver. With a 40% margin, cuts are much harder to recover than increases. Capacity matters too: 750 extra members would also make the gym more crowded.</p>
+  <p><b>(d)</b> EVC = reference value + differentiation value = €35 (budget gym) + €30 (physio otherwise paid) + €15 (value of coordination) = <b>€80</b>. At €60, Kern captures only three quarters of the value it creates. There is room to price higher, or to tier the offer (for example a premium tier with more physio checks for members recovering from injury).</p>
+  <p><b>(e)</b> Good reasons: elasticity is an average and hides segments (injured athletes are much less price sensitive than students); it is usually estimated from small past changes and may not hold for a 10% step; competitor reactions (a new budget gym nearby) are not in the number; members often have notice periods, so churn shows up with a delay; and a price rise may change the mix toward heavy users who cost more to serve.</p>`,
+  rubric:[['Contribution per member and in total correct',2],['Break-even loss for the increase (−20%) correct',2],['Required gain for the cut (+33%) correct',2],['Both elasticity scenarios calculated and a clear recommendation',4],['EVC of €80 with interpretation',3],['Two valid limitations of the elasticity estimate',2]]
+},
+{
+  id:'q3', section:'Customer value', pts:12,
+  title:'Is a half-price first year a good deal?',
+  caseHtml:`<p>Kern also sells a yearly membership for €600, paid at the start of each year. After service costs, each member contributes a margin of <b>€240 per year</b>. Annual retention is <b>80%</b> and Kern uses a discount rate of <b>10%</b>. Acquiring a new member through online advertising and trial sessions currently costs about <b>€200</b>.</p>
+  <p>For January, marketing proposes a campaign: <b>first year for half price</b> (€300), after which the normal fee applies. Past campaigns suggest that members acquired with a discount renew after year one at only <b>65%</b>; from year two onward they behave like regular members.</p>
+  <p>Useful formula, with margin m paid at the start of each year: CLV = m × (1 + d) / (1 + d − r).</p>`,
+  ask:[['Calculate the CLV of a regular member and their net value after acquisition cost.',3],['Calculate the CLV of a member acquired through the half-price offer.',4],['Under what condition would the campaign still create value? Be specific.',3],['Calculate how much CLV rises if retention of regular members improves from 80% to 85%, and draw one managerial conclusion.',2]],
+  placeholder:'(a) CLV = …',
+  why:'Tests customer lifetime value as a decision tool: comparing acquisition offers, setting an acquisition budget and valuing retention.',
+  model:`<div class="calc">(a) CLV = 240 × 1.10 / (1.10 − 0.80) = 264 / 0.30 = €880
+    net of acquisition: €880 − €200 = €680
+
+(b) Year 1 margin: €300 − €360 service cost = −€60
+    if renewed (65%), the member is worth a regular CLV one year later,
+    discounted one year: €880 / 1.10 = €800
+    CLV(promo) = −60 + 0.65 × 800 = €460</div>
+  <p>Check of the logic: for a regular member the same steps give 240 + 0.80 × 800 = €880, which matches (a).</p>
+  <p><b>(c)</b> Each promotional member is worth €420 less than a regular member (€880 − €460), and Kern loses money on them in year one. The campaign creates value only if it brings in members <b>who would not have joined otherwise</b> and whose acquisition cost stays below €460, or if it lowers acquisition cost per member by more than €420 (impossible, since it costs €200 today). If many January joiners would have joined at full price anyway, the campaign simply gives away margin. A strong answer proposes a test, for example offering the discount in some centres or to a random half of website visitors, to measure how many joiners are truly incremental.</p>
+  <div class="calc">(d) CLV at 85% = 264 / (1.10 − 0.85) = 264 / 0.25 = €1,056  (+€176, +20%)</div>
+  <p>Five points of retention raise the value of every member by 20%, without any acquisition spend. Retention work (onboarding, a check-in after the first month, follow-up when a member stops visiting) deserves at least as much budget as the January campaign.</p>`,
+  rubric:[['Regular CLV of €880 and net value of €680',3],['Negative first-year margin of −€60 identified',1],['Promo CLV of €460 with correct discounting',3],['Condition for value creation stated in terms of incrementality or acquisition cost',3],['Retention scenario of €1,056 with a managerial conclusion',2]]
+},
+{
+  id:'q4', section:'Marketing evidence', pts:12,
+  title:'Did the “New Year Reset” email really work?',
+  caseHtml:`<p>Kern’s marketing manager presents this slide to the management team:</p>
+  <p><b>“Members who opened our New Year Reset email spent 30% more on extras (personal training, massages, supplements) in January than members who did not. The campaign was a big success.”</b></p>
+  <p>The data analyst had quietly kept a random <b>holdout group</b>: 5,000 members who received no email, versus 20,000 who did.</p>
+  <div class="tw"><table><tr><th>Group</th><th>Members</th><th>Average January spend on extras</th></tr>
+  <tr><td>Received the email</td><td>20,000</td><td>€52</td></tr>
+  <tr><td>Holdout (no email)</td><td>5,000</td><td>€50</td></tr></table></div>
+  <p>The margin on extras is 30%. The campaign cost €0.40 per member emailed (design, discount vouchers used, platform fees).</p>`,
+  ask:[['Explain why the claim on the slide does not show that the email caused higher spending. Name at least two specific problems.',4],['Using the holdout data, calculate the incremental revenue, incremental margin and return on the campaign.',5],['The CEO asks you to design the measurement of next quarter’s campaigns. Give three rules you would put in place.',3]],
+  placeholder:'(a) …',
+  why:'Tests whether you can tell correlation from causation in marketing data and calculate incremental return, a key skill for anyone who signs off budgets.',
+  model:`<p><b>(a)</b> Comparing openers with non-openers compares different people, not the effect of the email. <b>Selection bias</b>: members who open Kern emails are more engaged, visit more often and would have spent more anyway. <b>Reverse causality and timing</b>: members already planning to book a trainer in January are more likely to open a New Year email. <b>Wrong comparison group</b>: the right comparison is everyone who received the email versus comparable members who did not, regardless of opening. Opening is itself an outcome, not the treatment.</p>
+  <div class="calc">(b) incremental spend per emailed member = €52 − €50 = €2
+    incremental revenue = 20,000 × €2      = €40,000
+    incremental margin  = 30% × €40,000    = €12,000
+    campaign cost       = 20,000 × €0.40   = €8,000
+    net contribution    = €12,000 − €8,000 = €4,000
+    return on spend     = 4,000 / 8,000    = 50%</div>
+  <p>The campaign did pay off, but the true lift is 4% (€2 on €50), not 30%. The slide overstated the effect more than sevenfold.</p>
+  <p><b>(c)</b> Good rules: keep a random holdout for every campaign (5 to 10% of members); judge campaigns on incremental margin, not on opens, clicks or bookings attributed by the last click; agree on the success metric and analysis before launch; make sure the holdout is large enough to detect a realistic lift; and report campaigns that failed as well as those that worked, so the organisation learns.</p>`,
+  rubric:[['Identifies selection bias between openers and non-openers',2],['Identifies a second problem (reverse causality, wrong comparison, timing)',2],['Incremental revenue and margin correct',3],['Net contribution and return correct',2],['Three concrete, practical measurement rules',3]]
+},
+{
+  id:'q5', section:'Brand and sustainability', pts:12,
+  title:'Talk about it or stay quiet? Kern’s green credentials',
+  caseHtml:`<p>Kern has invested heavily in sustainability: solar panels on every centre, spinning bikes that feed energy back into the building, no single-use plastic, and 60% lower energy use per member than in 2019. At the same time, member reviews complain about crowded gyms at peak hours and long waiting times for physiotherapy appointments.</p>
+  <p>The team is split. One group wants a large campaign: <b>“The greenest gym in the Netherlands.”</b> The other wants to say nothing about sustainability until the service problems are fixed, fearing accusations of greenwashing and a backlash in Google reviews and on Instagram.</p>`,
+  ask:[['Explain the difference between greenwashing and greenhushing, and why each is a risk for Kern.',3],['Using the idea of brand fit, argue whether sustainability is a credible message for a health and fitness brand. Consider what members already believe and experience.',4],['Recommend a communication approach: what to say, where, and what proof to show. Explain how you would handle the service complaints in the same plan.',5]],
+  placeholder:'(a) …',
+  why:'Tests judgement on a brand dilemma where both speaking up and staying silent carry costs.',
+  model:`<p><b>(a)</b> <b>Greenwashing</b> is claiming more environmental benefit than the company delivers or can prove. Here the factual basis is real, so the risk lies in the framing: a “greenest gym in the Netherlands” superlative invites scrutiny, and the Dutch ACM requires comparative sustainability claims to be substantiated. <b>Greenhushing</b> is deliberately under-communicating real sustainability performance. Its cost is that Kern gives up a genuine point of difference that matters to part of its audience, and stakeholders may assume it has nothing to report.</p>
+  <p><b>(b)</b> Sustainability fits a health brand reasonably well: both are about long-term wellbeing, and features such as energy-generating bikes are visible and easy to believe. But it is not why most people choose a gym or a physiotherapist; they choose on results, convenience and service. When members are frustrated about the basics (crowding, waiting times), a sustainability campaign can read as deflection. Fit with the brand’s values is decent; fit with the current member experience is low.</p>
+  <p><b>(c)</b> Strong answers recommend <b>specific, verifiable and modest</b> communication rather than either extreme. Share concrete facts (“60% less energy per member since 2019; our bikes power the lights”) inside the centres, on the website and in the app, where members already are, rather than in a national campaign; avoid superlatives. At the same time, tackle the service problems openly: acknowledge them, show what is changing (extra evening slots, a live crowd meter in the app, more physiotherapists) and report progress. Sequence matters: a broad green campaign should wait until service has visibly improved, while factual sustainability information can continue at the point of experience.</p>`,
+  rubric:[['Defines greenwashing and greenhushing correctly',2],['Applies each risk to Kern',1],['Distinguishes fit with brand values from fit with the current experience',4],['Recommends specific, verifiable claims with proof',2],['Places messages where members are, not only in broad media',1],['Integrates the service issues with sequencing',2]]
+},
+{
+  id:'q6', section:'Channels and online reviews', pts:12,
+  title:'Going direct without losing the platform',
+  caseHtml:`<p>About 30% of Kern’s class visits come through a <b>sports platform</b> (in the style of OneFit or ClassPass) where users buy credits and book classes at many gyms. The platform keeps about 40% of each booking and owns the customer relationship. Employers also buy Kern sessions through a corporate wellness broker that takes 20%.</p>
+  <p>Kern wants to launch its own app with direct booking, memberships and reviews. The platform has hinted that Kern’s classes could be shown lower in search results if Kern starts “pulling users off the platform”.</p>`,
+  ask:[['Identify the main sources of channel conflict and what each party stands to lose.',3],['Design a multi-channel model that grows direct business while keeping the platform and broker useful. Address pricing, the division of roles and how you move customers over.',6],['Should Kern show member reviews in its app and on its website? Give one argument for and one against, and a recommendation.',3]],
+  placeholder:'(a) …',
+  why:'Tests channel design with real partners and a realistic view of online reviews in a health setting.',
+  model:`<p><b>(a)</b> The platform fears losing bookings and commission, and its value to users depends on many gyms staying on it. Kern pays a high commission and does not own the customer data, so it cannot build loyalty or sell physiotherapy and memberships to platform users. The broker fears being bypassed for corporate deals. Price transparency is a risk too: if direct prices are clearly lower, the platform may retaliate.</p>
+  <p><b>(b)</b> A strong design gives each channel a role instead of fighting for the same booking:</p>
+  <p>• <b>Platform</b> = acquisition: off-peak classes and trial visits for people who do not know Kern yet; keep a limited, stable timetable there.<br>• <b>Own app</b> = loyalty and value: memberships, physiotherapy, personal training, programmes and peak-hour booking; offer benefits the platform cannot (priority booking, progress tracking, a physio check), rather than simply lower prices.<br>• <b>Moving customers over</b>: after a set number of platform visits, invite users in the centre (not through the platform) to a member trial; train front-desk staff to do this well.<br>• <b>Broker</b>: keep for large employers where the broker handles contracts; sell directly to small firms.<br>• <b>Measure</b>: track the cost per acquired member by channel and the share of platform users who convert.</p>
+  <p>The test of a good answer: every channel has a clear job, and partners still see a reason to work with Kern.</p>
+  <p><b>(c)</b> <b>For</b>: prospective members and patients rely heavily on reviews to judge trainers and therapists; reviews build trust and help Kern’s pages rank in search. <b>Against</b>: in a health setting, reviews may contain medical details, which creates privacy concerns, and a few negative reviews about one therapist can hurt the whole brand. Recommendation: show reviews of the service (scheduling, cleanliness, atmosphere, results), moderate for personal medical information, ask every member for a review after their programme, and respond publicly to criticism.</p>`,
+  rubric:[['Identifies conflict from the platform, broker and Kern side',3],['Clear role for each channel',2],['A way to move customers to the direct channel without open price war',2],['Pricing or benefit logic that avoids retaliation',2],['Balanced review argument with a recommendation and safeguards',3]]
+},
+{
+  id:'q7', section:'Marketing and AI', pts:10,
+  title:'When people read the AI summary instead of the reviews',
+  caseHtml:`<p>When someone searches for “physiotherapist near me” or “gym Utrecht”, search engines and map apps now show an <b>AI-generated summary</b> of a location’s reviews (“People like the trainers but mention crowded evenings and parking”). Many people read only that summary before choosing.</p>
+  <p>You are responsible for marketing at Kern’s 12 centres.</p>`,
+  ask:[['Explain how this changes the way online word of mouth reaches prospective members, compared with reading individual reviews.',3],['What should Kern do differently in managing reviews and its online information?',4],['Name one risk and one opportunity for Kern.',3]],
+  placeholder:'(a) …',
+  why:'Tests whether you can reason about a new development using established principles of word of mouth.',
+  model:`<p><b>(a)</b> Word of mouth used to reach people mostly directly: they read individual reviews and judged the reviewers themselves. Now an algorithm sits in between and selects, compresses and frames what people see. A few recurring themes dominate; nuance, context and the reviewer’s own voice disappear. Part of the persuasion now comes from the platform’s AI, so trust shifts from other customers to the system that summarises them.</p>
+  <p><b>(b)</b> Manage <b>themes</b>, not only star ratings: track which topics appear in each centre’s summary and fix the operational causes behind recurring complaints (crowded evenings will appear in every summary until capacity changes). Encourage detailed reviews that mention specific aspects (therapist, programme, results). Keep opening hours, services, parking information and prices complete and identical across Google, map apps and the website, so the AI has accurate material. Respond to issues publicly. Report each centre’s summary as a new monthly metric.</p>
+  <p><b>(c)</b> <b>Risk</b>: one repeated complaint can define a centre in the summary even if it affects few members, and Kern cannot edit the summary. <b>Opportunity</b>: a genuine strength many reviewers mention (for example knowledgeable trainers) is amplified to every prospect and can anchor Kern’s positioning. Strong answers note that you cannot game the summary; you can only change the experience that feeds it.</p>`,
+  rubric:[['Explains the shift from direct peer reviews to an AI-mediated summary',3],['At least three concrete changes in review and information management',4],['One realistic risk and one realistic opportunity',3]]
+},
+{
+  id:'q8', section:'Application to your organisation', pts:15,
+  title:'A one-page marketing memo for your own board',
+  caseHtml:`<p>Choose your own organisation, or one you know well. Write a memo of at most 400 words to your board or management team.</p>`,
+  ask:[['State one marketing problem or opportunity, with the evidence you have today.',3],['Identify the target customers involved and what they value.',3],['Propose one decision and a test that would show whether it works before full roll-out.',4],['Define the KPI you would report and the threshold for success or stopping.',3],['Name the main risk and how you will manage it.',2]],
+  placeholder:'To: Board of …\nFrom: …\nSubject: …',
+  why:'Tests whether you can turn course concepts into a decision your organisation could actually take.',
+  model:`<p>There is no single right answer. A strong memo reads like this example, written for a fictional city museum:</p>
+  <p><b>Problem.</b> 70% of our visitors come once and never return; only 4% of first-time visitors buy a Museumkaart-linked membership or a second ticket within a year. Our ticket data show most first visits are tourists or families during school holidays.</p>
+  <p><b>Customers.</b> Families from the region with children aged 6 to 12. They value activities that keep children engaged, easy planning and value for money across several visits.</p>
+  <p><b>Decision and test.</b> Introduce a “family season pass” offered at the exit, with a children’s trail that changes every quarter. Test it for three months on weekends only, alternating weekends with and without the offer.</p>
+  <p><b>KPI.</b> Share of family visitors who return within six months. Success: at least 6 percentage points higher for families who visited on offer weekends. Stop if the difference is under 2 points.</p>
+  <p><b>Risk.</b> Front-desk staff may not have time to explain the pass at busy moments; we will add a QR code on the trail map and train two staff members per weekend.</p>
+  <p>What earns the points: a specific problem backed by numbers, a clear customer, one decision rather than a list, a real comparison group, a measurable threshold set in advance, and a risk that is specific to the organisation.</p>`,
+  rubric:[['Specific problem with existing evidence',3],['Target customer and what they value',3],['One decision with a test that includes a comparison group',4],['KPI with a success or stop threshold set in advance',3],['Specific risk with a mitigation',2]]
+}
 ];
 
-const QUESTIONS = [
-  // ── SECTION 1: PRODUCT (20 pts) ──────────────────────────────────────
-  {
-    section: 'product', pts: 10, id: 'p1',
-    tag: 'Product — Levels & Strategy',
-    question: `Kotler & Armstrong describe a product as having three levels: the Core Customer Value, the Actual Product, and the Augmented Product.\n\n(a) Define each level with a concrete example from ONE product of your choice. (b) Explain how a company can use the augmented product level to differentiate itself in a mature, competitive market. (c) What risk does a company face when it over-augments a product?`,
-    context: null,
-    placeholder: `Example structure:\n(a) Define each level and apply to your chosen product...\n(b) Explain differentiation through augmentation...\n(c) Identify the risk of over-augmentation...`,
-    model: {
-      overview: `This question tests whether students can move beyond product features to understand the full value proposition architecture.`,
-      answer: `<strong>(a) Three Levels — Example: Nike Running Shoe</strong><br><br>
-• <strong>Core Customer Value:</strong> The fundamental need or benefit the customer is buying — not the shoe itself, but <em>performance, confidence, and the ability to run better</em>. Kotler's key insight: "Marketers must first define the core, problem-solving benefits the product will provide."<br><br>
-• <strong>Actual Product:</strong> The tangible features that deliver the core value — brand name (Nike), quality (Flyknit material), design (colourway), packaging, and features (cushioning technology).<br><br>
-• <strong>Augmented Product:</strong> Everything beyond the physical product — Nike+ app integration, free returns, extended warranty, Nike Run Club coaching, community events, and post-sale customer support.<br><br>
-<strong>(b) Differentiation through augmentation in mature markets:</strong><br>
-When physical product differences erode (most running shoes offer similar cushioning), augmentation becomes the key battleground. Nike differentiates via ecosystem lock-in (the Nike app tracks every run), community (running clubs), and personalisation (Nike By You custom shoes). These augmentations raise switching costs — a customer invested in the Nike ecosystem will not easily switch to Adidas, even if the shoe itself is comparable.<br><br>
-<strong>(c) Risk of over-augmentation:</strong><br>
-Companies risk <em>cost inflation without corresponding value perception</em>. If augmented features (e.g., free shipping, extended warranties, premium packaging) are bundled into the price, price-sensitive customers defect to stripped-down competitors. Second, complexity can confuse buyers. Apple encountered this when adding too many iPhone models — the "good, better, best" logic broke down and customers were paralysed. The strategic principle: augment only what target customers value and are willing to pay for.`,
-      rubric: [
-        { label: '4 pts', text: 'Accurate definition + example of all three levels' },
-        { label: '3 pts', text: 'Clear link between augmentation and differentiation in mature markets' },
-        { label: '2 pts', text: 'Risk of over-augmentation with managerial implication' },
-        { label: '1 pt',  text: 'Consistent use of a single, well-chosen product example' },
-      ],
-      concepts: ['Core value','Actual product','Augmented product','Differentiation','Switching costs'],
-      selfAssess: 'Did you apply all three levels to ONE coherent product example? Did you explain WHY augmentation matters in maturity — not just describe it?'
-    }
-  },
-  {
-    section: 'product', pts: 10, id: 'p2',
-    tag: 'Product — Portfolio & PLC',
-    question: `A consumer goods company has a portfolio of four brands: Brand A (growing fast, requires heavy investment), Brand B (dominant market share, stable market), Brand C (low share in a fast-growing market), and Brand D (low share, declining market).\n\n(a) Map these brands onto the BCG Growth-Share Matrix and name each cell. (b) What is the standard strategic recommendation for each cell? (c) The company's CFO wants to cut all investment from Brand C and reallocate to Brand B. Evaluate this decision from a marketing strategy perspective.`,
-    context: `Note: This question tests your ability to use a strategic portfolio tool AND to critically evaluate simplistic financial logic with marketing reasoning.`,
-    placeholder: `(a) Map each brand to the BCG matrix...\n(b) Give the strategy for each cell...\n(c) Critically evaluate the CFO's proposal...`,
-    model: {
-      overview: `The BCG matrix is a classic MBA tool. The real exam challenge is the critical evaluation in part (c) — students who only describe the matrix without analysing the CFO's logic will score low.`,
-      answer: `<strong>(a) BCG Matrix Mapping:</strong><br><br>
-• <strong>Brand A — Star</strong> (high growth, high share): Fast growth + heavy investment = Star. Stars are market leaders in fast-growing markets.<br>
-• <strong>Brand B — Cash Cow</strong> (low growth, high share): Dominant share in a stable/mature market. Generates more cash than it consumes.<br>
-• <strong>Brand C — Question Mark</strong> (high growth, low share): Fast-growing market but low share. Requires investment to determine if it can become a Star.<br>
-• <strong>Brand D — Dog</strong> (low growth, low share): Low share in declining market. Typically harvested or divested.<br><br>
-<strong>(b) Standard Strategic Recommendations:</strong><br>
-• <strong>Stars:</strong> Invest heavily to maintain or build share. Protect the leadership position.<br>
-• <strong>Cash Cows:</strong> Milk — extract cash with minimal reinvestment. Use profits to fund Stars and Question Marks.<br>
-• <strong>Question Marks:</strong> Invest selectively in those with the best potential to become Stars. Divest those that cannot reach leadership.<br>
-• <strong>Dogs:</strong> Harvest (reduce investment, maximise short-term cash) or divest.<br><br>
-<strong>(c) Evaluating the CFO's Decision:</strong><br>
-The CFO's logic is financially understandable but strategically dangerous. The BCG framework shows that <em>Cash Cows (Brand B) do not need more investment</em> — injecting capital into a mature, stable market yields diminishing returns. The real growth is in Brand C's market.<br><br>
-The question Marks (Brand C) represent the company's future. If the company systematically starves Question Marks, it risks having no Stars in the next cycle when Cash Cows decline (which they inevitably do as markets mature further).<br><br>
-<strong>Marketing counter-argument:</strong> The CFO is optimising for today at the expense of tomorrow. A portfolio must be balanced across the matrix — using Cash Cow returns to selectively fund Question Marks (Brand C) is precisely what Kotler recommends. The strategic recommendation would be to invest in Brand C sufficiently to push it toward Star status, while milking Brand B with efficiency rather than extra investment.`,
-      rubric: [
-        { label: '3 pts', text: 'Correct BCG mapping of all four brands with correct cell names' },
-        { label: '3 pts', text: 'Accurate strategic recommendations per cell' },
-        { label: '4 pts', text: 'Critical evaluation of CFO logic — demonstrates understanding of portfolio balance' },
-      ],
-      concepts: ['BCG Matrix','Stars','Cash Cows','Question Marks','Dogs','Portfolio balance'],
-      selfAssess: 'Did you go beyond describing the BCG matrix to actually ARGUE against the CFO with marketing logic? The best answers challenge the financial framing.'
-    }
-  },
+const TOTAL = Q.reduce((s,q)=>s+q.pts,0);
+const LIMIT = 120*60;
+const state = { i:0, answers:{}, revealed:{}, checks:{}, left:LIMIT, running:false };
+const KEY='advanced-marketing-exam-kern-v1';
+try{ const s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s&&s.answers){Object.assign(state,s,{running:false});} }catch(e){}
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify({i:state.i,answers:state.answers,revealed:state.revealed,checks:state.checks,left:state.left})); }catch(e){} }
 
-  // ── SECTION 2: PRICE (15 pts) ──────────────────────────────────────
-  {
-    section: 'price', pts: 8, id: 'pr1',
-    tag: 'Price — Strategy & Psychology',
-    question: `A new premium fitness app is considering its pricing strategy at launch.\n\n(a) Distinguish between market-skimming and market-penetration pricing. Under what conditions is each appropriate? (b) The app is considering setting the price at €9.99/month rather than €10.00. What psychological pricing principle does this reflect, and what does research say about its actual effectiveness? (c) Beyond price level, how can the company use price structure (e.g., bundling, freemium, tiered pricing) to maximise both adoption and revenue?`,
-    context: `The app competes with Peloton (€12.99/month) and a free tier from a major competitor. Its unique selling point is AI-personalised workout plans.`,
-    placeholder: `(a) Define skimming vs penetration and conditions for each...\n(b) Identify the psychological pricing principle and its evidence...\n(c) Discuss price structures (bundling/freemium/tiered)...`,
-    model: {
-      overview: `Pricing strategy requires linking customer psychology, competitive context, and revenue objectives. Students must go beyond definitions.`,
-      answer: `<strong>(a) Skimming vs Penetration Pricing:</strong><br><br>
-<strong>Market-skimming</strong>: Set a high initial price to skim maximum revenue from early adopters willing to pay a premium. Gradually lower price over time. Conditions: unique/superior product with low price sensitivity, high perceived value, no immediate threat of competition, high production costs to recover quickly.<br><br>
-<strong>Market-penetration</strong>: Set a low initial price to rapidly gain market share and discourage competitors. Conditions: price-sensitive market, economies of scale available, strong competition, when switching costs are low and you need to lock in users early.<br><br>
-<strong>Recommendation for the app</strong>: Given a differentiated AI product (skimming conditions), but strong competition (penetration pressure), a <em>freemium model</em> is a hybrid — free entry, premium conversion. If the company is confident in its AI differentiation, launching at €9.99 (slightly below Peloton at €12.99) uses competitive pricing with a slight premium-signal.<br><br>
-<strong>(b) Psychological Pricing — Charm Pricing:</strong><br>
-€9.99 vs €10.00 is <strong>charm pricing</strong> (also called "just below" pricing). It exploits the <em>left-digit effect</em>: consumers anchor on the leftmost digit (9 vs 10), perceiving €9.99 as significantly cheaper. Research (Thomas &amp; Morwitz, 2005) confirms this effect is real — €9.99 is encoded as "9 something" not "nearly 10."<br><br>
-However, research also shows charm pricing can <em>undermine premium brand positioning</em>. Luxury and premium brands (Louis Vuitton, Apple) avoid .99 prices precisely because round numbers signal quality and confidence. For a premium AI app, €10.00 or even €12.00 may signal more quality than €9.99.<br><br>
-<strong>(c) Price Structure Strategies:</strong><br>
-• <strong>Freemium</strong>: Basic features free, advanced AI personalisation paid. Maximises top-of-funnel adoption (reduces barrier to try) while monetising power users. Risk: if free tier is too good, conversion suffers.<br>
-• <strong>Tiered pricing</strong>: Individual (€9.99), Family (€14.99), Corporate wellness (€8/seat). Captures willingness-to-pay differences across segments.<br>
-• <strong>Annual bundling</strong>: €99/year (equivalent to ~€8.25/month) incentivises annual commitment, improves cash flow, and reduces churn. Spotify, Netflix all use this.<br>
-• <strong>Bundle with hardware partners</strong>: Partner with gym equipment brands for subscription bundles, expanding reach while maintaining perceived value.`,
-      rubric: [
-        { label: '3 pts', text: 'Clear distinction between skimming and penetration with correct conditions' },
-        { label: '2 pts', text: 'Correct identification of charm pricing + balanced view of its effectiveness' },
-        { label: '3 pts', text: 'Sophisticated discussion of at least two price structures with trade-offs' },
-      ],
-      concepts: ['Market skimming','Penetration pricing','Charm pricing','Left-digit effect','Freemium','Tiered pricing','Bundling'],
-      selfAssess: 'Did you discuss the TRADE-OFFS in each pricing approach, not just definitions? Did you connect price structure to both adoption AND revenue goals?'
-    }
-  },
-  {
-    section: 'price', pts: 7, id: 'pr2',
-    tag: 'Price — Value & Competitive Response',
-    question: `Your company sells industrial software at €50,000/year per enterprise client. A new competitor has entered the market at €30,000/year with similar (though slightly inferior) functionality.\n\n(a) Using the concept of customer-perceived value, explain why cutting your price to match the competitor is NOT necessarily the right response. (b) What is a "price war" and why is it particularly dangerous in B2B software markets? (c) Propose THREE concrete non-price responses the company could use to defend its position.`,
-    context: null,
-    placeholder: `(a) Explain customer-perceived value and why price-matching may not be optimal...\n(b) Define price war and its dangers in B2B software...\n(c) Propose three specific non-price responses...`,
-    model: {
-      overview: `This is a high-value question that tests strategic thinking under competitive pressure. The strongest answers integrate CPV theory with specific B2B context.`,
-      answer: `<strong>(a) Customer-Perceived Value (CPV) vs Price:</strong><br><br>
-CPV = Total Customer Benefits − Total Customer Costs. If your software delivers more value than the competitor (better integration, reliability, support, reputation), then the higher price is <em>justified</em> by the value differential.<br><br>
-Cutting price to €30,000 is only rational if the CPV gap has closed — i.e., customers now perceive the two products as near-identical. If customers still perceive your software as meaningfully superior, a price cut signals two dangerous messages: (1) you are doubting your own value proposition, (2) you were previously overcharging. Both damage brand equity.<br><br>
-Better logic: conduct customer research to understand <em>where</em> your product's perceived value is strongest. Then invest in communicating that differential — not reducing price.<br><br>
-<strong>(b) Price Wars in B2B Software:</strong><br>
-A <strong>price war</strong> is an escalating cycle of competitive price cuts that destroys industry margins without generating real differentiation. In B2B software, they are especially dangerous because:<br>
-• <em>Long contract cycles</em>: price cuts lock in low revenue for 2–3 years.<br>
-• <em>Anchoring</em>: once buyers expect €30k, returning to €50k in the next renewal is nearly impossible without a major product leap.<br>
-• <em>Margin destruction is permanent</em>: unlike physical goods, software has near-zero marginal cost — price competition destroys revenue without reducing variable costs.<br>
-• Competitors with VC funding can sustain losses longer than incumbents.<br><br>
-<strong>(c) Three Non-Price Defensive Responses:</strong><br>
-1. <strong>Value reinforcement campaign</strong>: Quantify and communicate ROI — e.g., "Our clients save on average €120,000/year in operational efficiency." Arm your sales force with ROI calculators and case studies.<br>
-2. <strong>Service augmentation</strong>: Add a dedicated customer success manager, faster SLA (e.g., 2-hour vs 24-hour support), and free training/onboarding. These raise perceived value and switching cost without touching the base price.<br>
-3. <strong>Lock-in through integration</strong>: Deepen API integrations with clients' existing ERP and CRM systems. The more embedded your software, the higher the switching cost — the competitor's price advantage becomes irrelevant if migration is expensive and risky.`,
-      rubric: [
-        { label: '3 pts', text: 'Correct application of CPV logic — price cut not always rational' },
-        { label: '2 pts', text: 'Accurate definition and context-specific dangers of price wars in B2B SaaS' },
-        { label: '2 pts', text: 'Three specific, well-reasoned non-price responses with clear rationale' },
-      ],
-      concepts: ['Customer-perceived value','Price war','B2B pricing','Switching costs','Value communication','Service augmentation'],
-      selfAssess: 'Did you use the CPV formula explicitly? Did you connect B2B specifics (contract cycles, anchoring) to the price war danger — rather than giving generic answers?'
-    }
-  },
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-  // ── SECTION 3: PLACE (15 pts) ──────────────────────────────────────
-  {
-    section: 'place', pts: 8, id: 'pl1',
-    tag: 'Place — Channel Design & Conflict',
-    question: `A Dutch artisan chocolate brand currently sells exclusively through high-end department stores and specialty food shops. The marketing director wants to add a direct-to-consumer (D2C) e-commerce channel.\n\n(a) What are the TWO main types of channel conflict this decision could create? Define each and explain how they would manifest in this case. (b) What is the strategic rationale for adding a D2C channel despite the conflict risk? (c) How could the company design the D2C channel to minimise channel conflict while maximising its benefits?`,
-    context: null,
-    placeholder: `(a) Define vertical and horizontal channel conflict; apply to the chocolate brand...\n(b) Strategic rationale for D2C despite conflict...\n(c) Design choices to minimise conflict...`,
-    model: {
-      overview: `Channel strategy is one of the most practically relevant 4P topics for MBA students. The key is linking theory (types of conflict) to real managerial trade-offs.`,
-      answer: `<strong>(a) Two Types of Channel Conflict:</strong><br><br>
-<strong>Vertical channel conflict</strong> occurs between different levels of the same channel — in this case, between the <em>manufacturer (chocolate brand) and its retail partners (department stores, specialty shops)</em>. If the brand sells directly to consumers online at lower prices or with exclusive products, retailers feel undercut. They may respond by reducing shelf space, deprioritising the brand, or switching to competing brands.<br><br>
-<strong>Horizontal channel conflict</strong> occurs between members at the <em>same level</em> — e.g., between different retail partners competing for the same customers. Less directly relevant here, but if the brand offered different pricing or exclusives to one department store vs another, horizontal conflict would arise.<br><br>
-<em>In this case</em>, vertical conflict is the primary risk: specialty chocolate shops may feel betrayed if they see the brand selling the same products online for less, or promoting the D2C site more visibly than the stores.<br><br>
-<strong>(b) Strategic Rationale for D2C:</strong><br>
-• <strong>Margin capture</strong>: Removing the retail middleman raises gross margins significantly (retailers typically take 40–60% margin).<br>
-• <strong>Customer data</strong>: D2C channels give direct access to consumer purchase behaviour, preferences, and CRM data — impossible through department store relationships.<br>
-• <strong>Brand control</strong>: Storytelling, packaging experience, and brand narrative are fully owned in D2C (versus competing for shelf presence).<br>
-• <strong>Resilience</strong>: COVID-19 demonstrated that brands relying exclusively on retail channels face existential risk if stores close.<br>
-• <strong>Subscription revenue</strong>: D2C enables subscription models (chocolate subscription boxes) — a recurring revenue stream impossible through intermediaries.<br><br>
-<strong>(c) Conflict-Minimising D2C Design:</strong><br>
-1. <strong>Product differentiation</strong>: Sell exclusive D2C-only SKUs (e.g., seasonal collections, personalised boxes, larger gift sets) not available in stores. Retailers no longer compete directly with the same product assortment.<br>
-2. <strong>Price parity commitment</strong>: Maintain the same retail price online (or higher) to avoid undercutting partners.<br>
-3. <strong>Retailer referral programme</strong>: Drive subscription box gifting purchases through in-store QR codes — positioning the D2C channel as complementary (driving loyalty) rather than cannibalistic.<br>
-4. <strong>Transparent communication</strong>: Brief retail partners before launch, share how D2C builds brand awareness that drives footfall to their stores (brand building creates halo effect).`,
-      rubric: [
-        { label: '4 pts', text: 'Correct definitions AND brand-specific application of vertical and horizontal conflict' },
-        { label: '2 pts', text: 'At least three strategic rationales for D2C with logical reasoning' },
-        { label: '2 pts', text: 'Specific conflict-minimisation design choices — not just generic suggestions' },
-      ],
-      concepts: ['Vertical channel conflict','Horizontal conflict','D2C','Channel design','Disintermediation','Retailer relationships'],
-      selfAssess: 'Did you go beyond defining the conflict types to showing HOW they manifest for THIS brand? Did your D2C design choices directly address the conflicts you identified?'
-    }
-  },
-  {
-    section: 'place', pts: 7, id: 'pl2',
-    tag: 'Place — Omnichannel & Logistics',
-    question: `"The goal of a marketing channel is not just to deliver products, but to deliver customer value." Evaluate this statement in the context of omnichannel retailing. Use a real-world brand example to illustrate how integrated channel management creates competitive advantage.`,
-    context: `Your answer should demonstrate understanding of: (1) what omnichannel means vs multichannel; (2) how channel integration creates value beyond mere product delivery; (3) a specific brand case that brings the theory to life.`,
-    placeholder: `Define omnichannel vs multichannel...\nExplain value creation beyond delivery...\nIllustrate with a specific brand example...`,
-    model: {
-      overview: `This essay question rewards students who can synthesise the "why" of channel management — not just describe the mechanics. The strongest answers use a real brand to create a memorable, concrete argument.`,
-      answer: `<strong>The Statement: Channels Deliver Value, Not Just Products</strong><br><br>
-Kotler & Armstrong define marketing channels as "sets of interdependent organisations that help make a product or service available for use or consumption." But the quote captures something deeper: in modern markets, the <em>channel experience IS part of the value</em>. A product delivered late, through a confusing interface, with poor post-purchase support, destroys value — even if the product itself is excellent.<br><br>
-<strong>Omnichannel vs Multichannel:</strong><br>
-<strong>Multichannel</strong>: A brand operates in multiple channels (physical store + website + app) but these operate independently with separate inventories, pricing, and customer data silos. The customer experiences them as separate entities.<br>
-<strong>Omnichannel</strong>: All channels are fully integrated — a customer starts a purchase online, tries on in-store, and returns via the app, with all touchpoints sharing the same customer profile, inventory, and service history. The experience is seamless regardless of channel.<br><br>
-<strong>Value Created Beyond Product Delivery:</strong><br>
-Omnichannel creates four types of additional value:<br>
-1. <em>Convenience value</em> — customers choose when, where, and how to interact<br>
-2. <em>Information value</em> — consistent product information and reviews across all touchpoints<br>
-3. <em>Service value</em> — any channel can resolve any issue, no "that's not our department"<br>
-4. <em>Relationship value</em> — unified CRM builds a complete customer picture enabling personalisation<br><br>
-<strong>Case: Starbucks</strong><br>
-Starbucks is the benchmark omnichannel case. The Starbucks app integrates: mobile ordering (skip the queue), loyalty points visible in real-time, personalised offers based on purchase history, in-store payment, and even music saved in-app. A customer who orders on the app and picks up in-store has an experience where the channel friction has been eliminated entirely.<br><br>
-The competitive advantage is structural: Starbucks collects first-party data on 30+ million active loyalty members. This data enables hyper-personalised marketing (the app knows your "usual order" and sends you offers precisely when you're near a Starbucks). Competitors without this omnichannel infrastructure cannot replicate this personalisation — the channel system itself becomes the moat.<br><br>
-<strong>Conclusion:</strong> The statement is correct and strategically important. For MBA marketers, the implication is that channel investment decisions must be evaluated on value creation — not just distribution efficiency.`,
-      rubric: [
-        { label: '2 pts', text: 'Clear and accurate distinction between omnichannel and multichannel' },
-        { label: '2 pts', text: 'Identification of multiple types of value created beyond product delivery' },
-        { label: '3 pts', text: 'Rich, specific brand case that demonstrates competitive advantage from channel integration' },
-      ],
-      concepts: ['Omnichannel','Multichannel','Channel integration','Customer value','First-party data','Competitive advantage'],
-      selfAssess: 'Did you actually EVALUATE the statement (agree/disagree/nuance) or just describe omnichannel? Did your brand example show the COMPETITIVE ADVANTAGE specifically — not just what the brand does?'
-    }
-  },
+// table of contents
+$('toc').innerHTML = Q.map((q,n)=>`<li><span>${n+1}. ${q.section}</span><span>${q.pts} pts</span></li>`).join('');
 
-  // ── SECTION 4: PROMOTION (20 pts) ──────────────────────────────────────
-  {
-    section: 'promotion', pts: 10, id: 'pm1',
-    tag: 'Promotion — IMC & Communications Mix',
-    question: `Integrated Marketing Communications (IMC) is described by Kotler as "carefully integrating and coordinating the company's many communications channels to deliver a clear, consistent, and compelling message about the organisation and its products."\n\n(a) Why is IMC difficult to implement in large organisations, and what organisational structures or processes help overcome this? (b) A global FMCG company is launching a new sustainable cleaning product targeting Millennials and Gen Z. Design a brief IMC plan identifying: (i) the key message/theme; (ii) three appropriate channels with rationale; (iii) how you would ensure message consistency across all touchpoints.`,
-    context: `The product is called "Ecoflux" — a concentrated, refillable cleaning solution. Price point: premium (€12 vs €4 for standard competitors). Target: environmentally conscious households, ages 25–40.`,
-    placeholder: `(a) Why is IMC hard in large organisations? What helps?\n(b) Design the IMC plan: message, channels, consistency mechanism...`,
-    model: {
-      overview: `IMC is one of the most practically tested concepts in marketing. Students should demonstrate understanding of both the organisational challenge AND be able to apply it to a real product scenario.`,
-      answer: `<strong>(a) Why IMC is Difficult + Structural Solutions:</strong><br><br>
-<strong>Why difficult:</strong><br>
-• <em>Organisational silos</em>: advertising, PR, digital, in-store teams often report to different managers with different budgets, KPIs, and agency relationships. No one "owns" the integrated message.<br>
-• <em>Channel proliferation</em>: managing consistent messaging across TV, social, in-store, influencer, email, packaging, events requires continuous coordination — expensive and time-consuming.<br>
-• <em>Measurement fragmentation</em>: each channel team measures success differently (reach, engagement, sales lift) making cross-channel optimisation nearly impossible.<br>
-• <em>Speed asymmetry</em>: social media moves in hours; TV campaigns take months. Coordinating these creates timing conflicts.<br><br>
-<strong>Structural solutions:</strong><br>
-• Appoint a <strong>Chief Marketing Officer with P&L authority</strong> over all communications budgets — removes silos at the top.<br>
-• Use a <strong>"big idea" creative brief</strong> shared with all agencies and channel teams — ensures all execution traces back to one insight.<br>
-• Implement a <strong>brand governance system</strong> with a style guide, mandatory message hierarchy, and sign-off process before any channel publishes.<br>
-• Adopt <strong>cross-functional IMC task forces</strong> for each campaign, with representatives from digital, PR, in-store, and media.<br><br>
-<strong>(b) IMC Plan for Ecoflux:</strong><br><br>
-<strong>(i) Key Message/Theme:</strong><br>
-<em>"One bottle. Endless refills. Serious clean."</em><br>
-The message simultaneously addresses efficacy (premium cleaning performance) and sustainability (refill model), countering the "eco = less effective" objection. Tone: confident, direct, modern — not preachy.<br><br>
-<strong>(ii) Three Channels + Rationale:</strong><br>
-1. <strong>Instagram &amp; TikTok (Influencer + Organic):</strong> Millennials and Gen Z discover new products through peer recommendations, not ads. Partner with micro-influencers (50k–300k followers) in sustainability/home niches for authentic refill demonstrations. Rationale: high trust, low ad fatigue, algorithm reach on share.<br><br>
-2. <strong>In-store placement &amp; packaging experience:</strong> Despite digital discovery, purchase often occurs in-store. Premium shelf placement in Jumbo/AH's "sustainable living" section + QR code on packaging linking to the refill subscription. Packaging itself IS a communication channel — the refill bottle's design signals premium eco credentials at the moment of decision.<br><br>
-3. <strong>YouTube &amp; CTV (Connected TV) pre-roll:</strong> A 30-second "refill ritual" video demonstrating the concentrated formula and beautiful glass bottle — emotional, aspirational, triggers consideration. Targets 25–40 who stream content. Builds brand salience and communicates the premium proposition with visual impact that social cannot replicate.<br><br>
-<strong>(iii) Message Consistency Mechanism:</strong><br>
-Create a <strong>single creative platform document</strong> containing: the core insight, the message architecture (primary claim → secondary claims → proof points), approved visual language (colour palette, typography, photography style), and tone-of-voice guidelines. All agency and channel partners work from this document. Campaign is launched with a <strong>channel-specific adaptation guide</strong> — ensuring the TikTok version and the in-store shelf-talker share the same visual DNA, even if their format differs completely.`,
-      rubric: [
-        { label: '4 pts', text: 'Substantive discussion of IMC implementation challenges (at least 3 barriers) + structural solutions' },
-        { label: '3 pts', text: 'Compelling, specific IMC message/theme that addresses both efficacy and sustainability' },
-        { label: '2 pts', text: 'Three well-reasoned channel choices with explicit rationale linking to the target audience' },
-        { label: '1 pt',  text: 'Concrete, actionable consistency mechanism — not just "use the brand guidelines"' },
-      ],
-      concepts: ['IMC','Organisational silos','Creative brief','Omnichannel consistency','Influencer marketing','CTV','Message architecture'],
-      selfAssess: 'Did you go beyond listing channels to explaining WHY each channel is right for THIS target audience? Did your consistency mechanism go beyond generic advice?'
-    }
-  },
-  {
-    section: 'promotion', pts: 10, id: 'pm2',
-    tag: 'Promotion — Advertising, Personal Selling & Digital',
-    question: `"The promotional mix should be chosen based on the nature of the product, the target market, and the stage of the buyer's journey — not historical budget allocation." Critically evaluate this statement, and illustrate your argument with TWO contrasting product categories.`,
-    context: `Consider using examples from at least two of the following: consumer packaged goods (FMCG), high-involvement B2B purchases, luxury goods, or platform/app-based services.`,
-    placeholder: `Evaluate the statement — do you agree? Why?\nIllustrate with two contrasting product categories showing different promotional mix logic...`,
-    model: {
-      overview: `This is a high-level essay question. Students should demonstrate critical thinking about the promotional mix — not just list the tools. The contrast between two product categories is where the real analytical quality shows.`,
-      answer: `<strong>Critical Evaluation of the Statement:</strong><br><br>
-The statement is largely correct, but it creates a false binary. While product/market/journey logic should drive the promotional mix, <em>budget constraints are always present</em> and must be incorporated into the decision — the issue is not eliminating budget logic but ensuring it doesn't override strategic logic.<br><br>
-The deeper critique is of the prevalent corporate practice of "we spent 70% on TV last year so we'll do the same this year." This perpetuates channels that no longer match either the product, the audience, or the buyer journey. Kotler's framework is clear: the right promotional mix follows from the nature of the product (awareness vs persuasion vs loyalty), the target audience's media consumption, and where the customer is in the AIDA model (Awareness → Interest → Desire → Action).<br><br>
-<strong>Case 1: FMCG (e.g., Unilever detergent)</strong><br>
-A fast-moving consumer good with wide market penetration, low involvement, and frequent repurchase requires <em>mass reach + emotional salience</em>. The appropriate mix is dominated by: advertising (TV/digital for reach), in-store promotion (point-of-purchase displays, price promotions), and increasingly social/influencer for Millennial reach. Personal selling has minimal role — the "sales force" at this level is trade marketing (selling in to retailers). The buyer journey is fast and habitual: advertising → shelf recognition → purchase. Heavy sampling during product launches.<br><br>
-<strong>Case 2: B2B Enterprise Software (e.g., SAP ERP)</strong><br>
-A high-involvement, complex, rational purchase involving multiple stakeholders and an 18-month sales cycle requires <em>credibility + relationship + information</em>. The appropriate mix is dominated by: personal selling (account executives, solution architects), content marketing (whitepapers, case studies, demos), trade conferences/events (credibility signalling), and targeted digital advertising for lead generation (LinkedIn). Mass advertising is nearly irrelevant — the audience is small (CIOs and CFOs at large companies), the purchase is rationalised, and the buying committee requires different messages for different members.<br><br>
-<strong>Conclusion:</strong><br>
-The contrasting cases reveal the statement's wisdom: one mix is not superior to another — it must fit the product, market, and journey. The best promotional strategies combine <em>strategic first-principles thinking</em> with <em>ruthless audience discipline</em> to allocate budget where it actually moves buyers through the funnel. Historical allocation is a heuristic for the operationally lazy, not a strategy.`,
-      rubric: [
-        { label: '3 pts', text: 'Genuine critical evaluation of the statement — not just agreement; identifies nuance' },
-        { label: '4 pts', text: 'Two well-chosen contrasting cases with explicit explanation of WHY the mix differs' },
-        { label: '2 pts', text: 'Links promotional mix logic to buyer journey / AIDA or similar framework' },
-        { label: '1 pt',  text: 'Argumentative structure — builds toward a clear conclusion' },
-      ],
-      concepts: ['Promotional mix','AIDA model','FMCG promotion','B2B selling','IMC','Personal selling','Advertising','Buyer journey'],
-      selfAssess: 'Did you actually CRITIQUE the statement (not just describe it)? Did your two product examples show clearly DIFFERENT logic — not just different tools?'
-    }
-  },
+function score(id){ const q=Q.find(x=>x.id===id); const c=state.checks[id]||[]; return q.rubric.reduce((s,r,k)=>s+(c[k]?r[1]:0),0); }
+function total(){ return Q.reduce((s,q)=>s+score(q.id),0); }
+function words(t){ return (t.trim().match(/\S+/g)||[]).length; }
 
-  // ── SECTION 5: INTEGRATION (20 pts) ──────────────────────────────────────
-  {
-    section: 'integration', pts: 10, id: 'i1',
-    tag: 'Integration — 4Ps in Action',
-    question: `Read the following mini-case and answer the questions that follow.\n\n<strong>Case: BrewLab — Premium Coffee Pods</strong>\nBrewLab is a Dutch startup launching premium coffee pods (biodegradable, specialty-grade, locally sourced) targeting sustainability-conscious coffee drinkers aged 28–45. The pod is compatible with all Nespresso machines. Launch market: the Netherlands.\n\nFor each of the 4 Ps, recommend a specific strategic choice for BrewLab's launch, and explain how the four choices are internally consistent (i.e., they reinforce each other to create a coherent value proposition).`,
-    context: `Key constraints: (1) BrewLab has no existing brand awareness; (2) budget is limited — €150,000 for the full launch; (3) the premium positioning must be defended against private-label competitors who will copy within 12 months.`,
-    placeholder: `Product: What product decisions? Why?\nPrice: What pricing strategy? Why?\nPlace: What distribution strategy? Why?\nPromotion: What communication approach? Why?\nConsistency: How do the four choices reinforce each other?`,
-    model: {
-      overview: `The integration question tests whether students can think across the 4Ps simultaneously — not sequentially. The consistency argument is the hardest and most important part.`,
-      answer: `<strong>BrewLab 4Ps Launch Strategy:</strong><br><br>
-<strong>PRODUCT:</strong><br>
-Core: superior specialty coffee taste (single-origin, micro-roasted). Actual: biodegradable pod with premium feel, QR code linking to the farm origin story, Nespresso-compatible (reduces adoption barrier). Augmented: subscription with personalised roast profile questionnaire, free tasting kit for first order, recycling return envelope included.<br>
-The product must over-deliver on taste AND on the sustainability story — the packaging is itself a communication channel. This is not "just a pod" but a credence good where the sustainability claim must be made verifiable (certifications, farm photos, carbon labels).<br><br>
-<strong>PRICE:</strong><br>
-€0.75–0.85/pod (vs Nespresso's €0.40–0.50 and private-label at €0.20). This positions BrewLab in the "premium sustainable" tier below artisan cafés but above mainstream pods. Psychologically, €0.80/pod is reframed as "less than a café espresso (€2.50) with the quality approaching it." Annual subscription (€22/month for 28 pods) creates committed revenue and improves unit economics. No discounting in Year 1 — maintains premium anchor.<br><br>
-<strong>PLACE:</strong><br>
-Primary: D2C subscription website. Secondary: select specialty grocery (Marqt, EkoPlaza) and independent coffee shops (as in-store purchase + brand endorsement). Avoid Jumbo/AH in Year 1 — mass retail dilutes the premium signal and creates retailer margin pressure that squeezes the economics. The D2C-first strategy builds customer data, enables personalisation, and controls the brand story. Specialty retail provides physical discovery and brand credibility signals.<br><br>
-<strong>PROMOTION:</strong><br>
-With €150k: allocate 40% to seeding (100 micro-influencers in sustainability/foodie niches, product gifting + unboxing content), 30% to targeted Meta/Instagram ads (retargeting website visitors, lookalike audiences from email list), 20% to PR (sustainability media, food journalists — the biodegradable pod story IS the news hook), 10% to D2C website and content creation. No TV, no mass OOH — too expensive and wrong audience.<br><br>
-<strong>Internal Consistency — Why These 4 Work Together:</strong><br>
-All four choices reinforce the same core positioning: <em>"The best coffee you'll drink at home — without the environmental guilt."</em><br>
-• The premium product quality justifies the premium price (they reinforce each other)<br>
-• The D2C+specialty channel protects premium positioning (the wrong channel would undermine it)<br>
-• The influencer/PR promotion reaches exactly the audience willing to pay €0.80/pod<br>
-• The subscription model (price structure) works because D2C gives BrewLab the direct relationship to execute it<br>
-• The biodegradable pod story links product, price premium justification, and PR hook in one idea<br><br>
-A critical failure mode to avoid: distributing through AH at a lower price to gain volume. This would break the consistency — the product would be premium but the channel signals commodity, destroying brand equity before it has formed.`,
-      rubric: [
-        { label: '8 pts', text: '2 pts per P — specific, justified strategic choice linked to the context and constraints' },
-        { label: '2 pts', text: 'Explicit consistency argument — shows HOW the 4 choices reinforce each other' },
-      ],
-      concepts: ['4Ps integration','Value proposition','Premium positioning','D2C strategy','Brand consistency','Subscription model','Credence goods'],
-      selfAssess: 'Did you make SPECIFIC choices (e.g., actual price points, named channels) or just describe options? Did your consistency argument show genuine interdependence — not just "they all focus on premium"?'
-    }
-  },
-  {
-    section: 'integration', pts: 10, id: 'i2',
-    tag: 'Integration — Customer Value & STP',
-    question: `"The 4 Ps are only as effective as the market segmentation, targeting, and positioning (STP) that precede them." Critically discuss this statement. Using a real brand of your choice, show how an STP analysis shapes each of the 4 Ps in practice.`,
-    context: null,
-    placeholder: `Critically evaluate: does STP precede the 4Ps?\nChoose a real brand...\nShow how STP shapes each of the 4Ps specifically...`,
-    model: {
-      overview: `This question asks students to integrate the full marketing strategy framework. The best answers do not just describe STP and 4Ps separately but show the causal link between targeting decisions and marketing mix choices.`,
-      answer: `<strong>Critical Evaluation of the Statement:</strong><br><br>
-The statement is substantially correct — the 4 Ps are instruments for delivering value to a specific target. Without knowing <em>who</em> you are targeting, what need you are addressing, and how you want to be positioned in that segment's mind, the 4 Ps are just operational decisions with no strategic logic.<br><br>
-However, the relationship is not always sequential. In platform businesses and data-driven companies, the 4Ps can inform STP in reverse — a product feature that unexpectedly resonates with a new segment can reveal an untapped target. Amazon launched Amazon Web Services because it built infrastructure for itself and discovered demand from developers. The P (product) revealed the S (segment).<br><br>
-That said, for most companies, the classic logic holds: STP sets the strategy; 4Ps execute it.<br><br>
-<strong>Brand Case: IKEA</strong><br><br>
-<strong>STP:</strong><br>
-<em>Segmentation:</em> Young adults and families seeking affordable, functional home furnishing; value-conscious consumers who trade labour for price.<br>
-<em>Targeting:</em> Price-sensitive design aspirants — people who want good design but cannot afford design-store prices. Particularly strong in urban renters (25–40).<br>
-<em>Positioning:</em> "Democratic design" — beautiful, functional, sustainable home products accessible to the many, not the few. IKEA's positioning is unique because it includes the customer's own labour as part of the value equation (flat-pack self-assembly).<br><br>
-<strong>How STP Shapes the 4Ps:</strong><br>
-• <strong>Product:</strong> Modular, flat-packed, self-assembled. Designed to the segment's "good enough" aesthetic bar — not ultra-premium, but not cheap. Huge range (narrow target, broad product width) because the same household needs everything. Sustainability credentials (IKEA 2030 goals) speak to the target's values.<br>
-• <strong>Price:</strong> EVERYDAY LOW PRICES — no sales, no promotions, consistent value. This matches the target's planning mindset (they research before buying, not impulse shoppers). Competitive pricing is maintained through massive supply chain scale — the positioning demands it.<br>
-• <strong>Place:</strong> Out-of-town warehouse stores (lower real estate cost = lower price) with in-store restaurant and child area (making the trip an "outing" for young families). D2C online expansion post-COVID. The massive store format reflects the target's willingness to spend time at IKEA as part of the experience.<br>
-• <strong>Promotion:</strong> The catalogue (now digital) is itself the promotion — a design inspiration document, not just a product list. Social media content around home decoration. No TV celebrities — aspirational but attainable imagery. The promotion reflects the positioning perfectly: "here's what YOUR home could look like."<br><br>
-<strong>Conclusion:</strong> IKEA's 4Ps make no sense without the STP foundation. Every decision traces back to the same target and positioning — this is what internal marketing coherence looks like.`,
-      rubric: [
-        { label: '3 pts', text: 'Genuine critical evaluation — including the limits or exceptions to the STP-first logic' },
-        { label: '3 pts', text: 'Clear, accurate STP analysis of the chosen brand' },
-        { label: '4 pts', text: '1 pt per P — explicit link from the STP decision to the specific marketing mix choice' },
-      ],
-      concepts: ['STP','Segmentation','Targeting','Positioning','Marketing mix alignment','Democratic design','Value proposition'],
-      selfAssess: 'Did you genuinely CRITIQUE the statement or just describe STP + 4Ps? Did you make the causal links between STP and EACH P explicit and specific to your chosen brand?'
-    }
-  },
-
-  // ── SECTION 6: REFLECTION (10 pts) ──────────────────────────────────────
-  {
-    section: 'reflection', pts: 10, id: 'r1',
-    tag: 'Reflection — Your Own Marketing Question',
-    question: `This is the final and most open question of the exam.\n\n<strong>Part A — Your Marketing Question:</strong>\nFormulate ONE question about marketing strategy, consumer behaviour, or the 4 Ps that is NOT answered in the standard textbook. This question should emerge from something you observed, read about, or experienced that made you think "the theory doesn't fully explain this."\n\n<strong>Part B — A Manager's Pain Point:</strong>\nDescribe ONE real pain point that marketing managers face in organisations today. Explain why this pain point exists (what organisational, market, or technological forces create it) and why it is difficult to solve.\n\nNote: There is no single "right" answer. You are evaluated on the quality of your thinking, the specificity of your observations, and the depth of your reflection.`,
-    context: null,
-    placeholder: `Part A — Your own marketing question:\nWhat puzzles you that the textbook doesn't answer?\n\nPart B — A real manager pain point:\nWhat do marketing managers struggle with and why is it hard to fix?`,
-    isReflection: true,
-    model: {
-      overview: `This question has no single correct answer. It evaluates metacognitive ability — can the student identify the limits of theory, observe real-world complexity, and think critically about the profession?`,
-      answer: `<strong>EXAMPLE STRONG ANSWERS (illustrative — your own observations are more valuable):</strong><br><br>
-<strong>Part A — Example Marketing Questions:</strong><br><br>
-<em>Option 1 (Consumer Behaviour):</em> "Kotler's buyer behaviour models assume that increased satisfaction drives loyalty. But why do many deeply satisfied customers still switch brands when a slightly better option becomes available? Is satisfaction a necessary but insufficient condition for loyalty — and what is the missing variable?" (This question probes the satisfaction-loyalty gap, which researchers like Jones & Sasser explored.)<br><br>
-<em>Option 2 (Digital Marketing):</em> "The 4 Ps were designed for a world where companies controlled the message. In an era where TikTok users drive brand narratives and consumers create product meaning without brand input, how does the 'Promotion' P need to be reconceptualised? Is the P for Promotion now better understood as 'Participation'?"<br><br>
-<em>Option 3 (Pricing):</em> "When dynamic pricing algorithms set prices in real-time (surge pricing at Uber, airline yield management), consumers increasingly feel price unfairness — yet adoption of these services continues. What are the boundaries of acceptable dynamic pricing, and how does perceived fairness interact with brand loyalty?"<br><br>
-<strong>Part B — Example Manager Pain Points:</strong><br><br>
-<em>Pain Point 1 — Attribution in Multi-Touch Digital Environments:</em> Marketing managers cannot accurately attribute sales to specific marketing investments when customers are exposed to 10+ touchpoints before purchase. Last-click attribution misallocates budget. Multi-touch models exist but require data infrastructure most companies lack. Result: budget decisions are made with false confidence. This exists because: digital channel proliferation outpaced measurement capability; privacy changes (iOS14, cookie deprecation) destroyed the data foundation; organisational incentives reward channel teams for their own attribution rather than cross-channel truth.<br><br>
-<em>Pain Point 2 — Short-Term vs Long-Term Marketing Tension:</em> Most marketing managers are evaluated on quarterly or annual KPIs (sales, leads, CAC). Brand building — which produces compounding returns over 3–5 years — is consistently underfunded because CFOs and CEOs cannot see the immediate ROI. Binet & Field's research shows 60% of budget should go to brand building, 40% to activation — yet most companies invert this ratio. The pain point is structural: the incentive system punishes long-term thinking even when managers intellectually understand its value.<br><br>
-<strong>Evaluation Rubric:</strong><br>
-Strong answers demonstrate: (1) genuine intellectual curiosity — the question should not be answerable by Google; (2) specific observation — "I noticed that..." rather than generic claims; (3) understanding of WHY the pain point is structurally difficult — not just "it's complicated."`,
-      rubric: [
-        { label: '5 pts', text: 'Part A: Question is original, specific, and probes beyond textbook content — reflects real intellectual engagement' },
-        { label: '5 pts', text: 'Part B: Pain point is specific, real, and the "why it is hard" explanation shows structural insight — not superficial observation' },
-      ],
-      concepts: ['Marketing theory limits','Attribution','Short-termism','Consumer behaviour','Brand building','Managerial reflection'],
-      selfAssess: 'Is your question one that a PhD student could actually research? Is your pain point something a real marketing manager would immediately recognise — or is it too generic?'
-    }
-  },
-];
-
-// ═══════════════════════════
-// STATE
-// ═══════════════════════════
-let currentQ = 0;
-let answers = {};
-let modelRevealed = {};
-let timerInterval = null;
-let secondsLeft = 7200; // 2 hours
-
-// ═══════════════════════════
-// HELPERS
-// ═══════════════════════════
-function showScreen(id) {
-  ['s-landing','s-exam','s-results'].forEach(s => {
-    const el = document.getElementById(s);
-    el.classList.add('hidden');
-  });
-  const target = document.getElementById(id);
-  target.classList.remove('hidden');
-  const card = target.querySelector('.card');
-  if (card) {
-    card.classList.remove('fade-in');
-    void card.offsetWidth;
-    card.classList.add('fade-in');
-  }
-  window.scrollTo(0,0);
+function render(){
+  const q=Q[state.i], n=state.i;
+  $('qpos').textContent=`Question ${n+1} of ${Q.length}`;
+  $('pts').textContent=`${total()} / ${TOTAL}`;
+  $('prog').style.width=((n+1)/Q.length*100)+'%';
+  const ans=state.answers[q.id]||'';
+  const rev=!!state.revealed[q.id];
+  const c=state.checks[q.id]||[];
+  $('q').innerHTML=`
+    <div class="qmeta"><span>${q.section}</span><span>${q.pts} points</span></div>
+    <h2>${q.title}</h2>
+    <div class="case">${q.caseHtml}</div>
+    <ol class="ask">${q.ask.map(a=>`<li><span>${a[0]}</span><em>${a[1]} pts</em></li>`).join('')}</ol>
+    <label for="ans-${q.id}" class="muted" style="font-size:13px">Your answer</label>
+    <textarea id="ans-${q.id}" placeholder="${esc(q.placeholder)}">${esc(ans)}</textarea>
+    <div class="wc" id="wc">${words(ans)} words</div>
+    <div class="reveal">${rev?'':`<button class="btn quiet" type="button" id="show">Show model answer</button>`}</div>
+    ${rev?`<section class="model"><h3>Model answer</h3><p class="why">${q.why}</p><div class="ans">${q.model}</div>
+      <div class="check"><h4>Score yourself</h4>
+      ${q.rubric.map((r,k)=>`<label><input type="checkbox" data-k="${k}" ${c[k]?'checked':''}><span>${r[0]}</span><em>${r[1]}</em></label>`).join('')}
+      <div class="sum"><span>Your score</span><b id="qs">${score(q.id)} / ${q.pts}</b></div></div></section>`:''}`;
+  const ta=$('ans-'+q.id);
+  ta.addEventListener('input',()=>{state.answers[q.id]=ta.value;$('wc').textContent=words(ta.value)+' words';save();});
+  const sh=$('show'); if(sh) sh.addEventListener('click',()=>{state.revealed[q.id]=true;save();render();});
+  $('q').querySelectorAll('.check input').forEach(cb=>cb.addEventListener('change',()=>{
+    const arr=state.checks[q.id]||(state.checks[q.id]=[]); arr[+cb.dataset.k]=cb.checked;
+    $('qs').textContent=`${score(q.id)} / ${q.pts}`; $('pts').textContent=`${total()} / ${TOTAL}`; save();
+  }));
+  $('prev').disabled = n===0;
+  $('next').textContent = n===Q.length-1 ? 'Finish' : 'Next';
 }
 
-function fmtTime(secs) {
-  const h = Math.floor(secs/3600);
-  const m = Math.floor((secs%3600)/60);
-  const s = secs%60;
-  return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+function fmt(s){ const h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return `${h}:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`; }
+let tick=null;
+function startClock(){ state.running=true; $('pause').textContent='Pause'; if(tick) return; tick=setInterval(()=>{ if(!state.running) return; if(state.left>0){state.left--; $('clock').textContent=fmt(state.left); if(state.left%15===0) save();} else { $('clock').textContent='Time is up'; } },1000); }
+$('pause').addEventListener('click',()=>{ state.running=!state.running; $('pause').textContent=state.running?'Pause':'Resume'; });
+
+function show(view){ ['start','exam','review'].forEach(v=>$(v).hidden=(v!==view)); window.scrollTo(0,0); }
+$('go').addEventListener('click',()=>{ show('exam'); $('clock').textContent=fmt(state.left); render(); startClock(); });
+$('prev').addEventListener('click',()=>{ if(state.i>0){state.i--;save();render();window.scrollTo(0,0);} });
+$('next').addEventListener('click',()=>{ if(state.i<Q.length-1){state.i++;save();render();window.scrollTo(0,0);} else { finish(); } });
+
+function finish(){
+  state.running=false;
+  const t=total();
+  $('final').textContent=t;
+  $('revrows').innerHTML=Q.map((q,n)=>`<li><button type="button" data-n="${n}">${n+1}. ${q.title}</button><span>${state.revealed[q.id]?score(q.id):'not scored'} / ${q.pts}</span></li>`).join('');
+  $('revrows').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{state.i=+b.dataset.n;show('exam');render();}));
+  const unscored=Q.filter(q=>!state.revealed[q.id]).length;
+  $('bandnote').textContent = (unscored?`${unscored} question${unscored>1?'s are':' is'} not yet scored. `:'') +
+    (t>=75?'Strong work. Your answers combine calculation with managerial judgement.':
+     t>=55?'A solid base. Revisit the questions where you lost most points, especially the calculations.':
+     'Worth another round. Work through the model answers for questions 2 to 4 step by step, then try again.');
+  show('review');
 }
-
-function sectionColor(sid) {
-  const s = SECTIONS.find(x=>x.id===sid);
-  return s ? s.color : '#2f5bea';
-}
-
-// ═══════════════════════════
-// TIMER
-// ═══════════════════════════
-function startTimer() {
-  secondsLeft = 7200;
-  clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
-    secondsLeft--;
-    const el = document.getElementById('timer-display');
-    if (el) {
-      el.textContent = fmtTime(secondsLeft);
-      el.className = 'timer-display' + (secondsLeft < 600 ? ' warning' : '');
-    }
-    if (secondsLeft <= 0) {
-      clearInterval(timerInterval);
-      if (confirm('Time is up! Would you like to see your results?')) {
-        showResults();
-      }
-    }
-  }, 1000);
-}
-
-// ═══════════════════════════
-// START EXAM
-// ═══════════════════════════
-function startExam() {
-  currentQ = 0;
-  answers = {};
-  modelRevealed = {};
-  showScreen('s-exam');
-  buildSecNav();
-  renderQ();
-  startTimer();
-}
-
-function buildSecNav() {
-  const nav = document.getElementById('sec-nav');
-  nav.innerHTML = '';
-  SECTIONS.forEach((s,i) => {
-    const btn = document.createElement('button');
-    btn.className = 'snav-btn';
-    btn.id = `snav-${s.id}`;
-    btn.textContent = s.label;
-    btn.onclick = () => {
-      // Jump to first Q of this section
-      const idx = QUESTIONS.findIndex(q => q.section === s.id);
-      if (idx >= 0) { currentQ = idx; renderQ(); }
-    };
-    nav.appendChild(btn);
-  });
-}
-
-function updateSecNav() {
-  SECTIONS.forEach(s => {
-    const btn = document.getElementById(`snav-${s.id}`);
-    if (!btn) return;
-    btn.className = 'snav-btn' + (QUESTIONS[currentQ].section === s.id ? ' active' : '');
-  });
-}
-
-// ═══════════════════════════
-// RENDER QUESTION
-// ═══════════════════════════
-function renderQ() {
-  const q = QUESTIONS[currentQ];
-  const area = document.getElementById('q-area');
-  const sec = SECTIONS.find(s => s.id === q.section);
-  const col = sec.color;
-
-  // Progress
-  document.getElementById('prog-label').textContent = `Question ${currentQ+1} of ${QUESTIONS.length}`;
-  const answeredPts = QUESTIONS.filter((_,i) => answers[i] !== undefined).reduce((a,_,i2) => {
-    // find actual answered qs
-    return a;
-  }, 0);
-  document.getElementById('prog-pts').textContent = `${currentQ+1} / ${QUESTIONS.length}`;
-  document.getElementById('prog-fill').style.width = `${((currentQ)/QUESTIONS.length)*100}%`;
-  document.getElementById('prog-fill').style.background = col;
-
-  // Prev/next buttons
-  const prevBtn = document.getElementById('btn-prev');
-  const nextBtn = document.getElementById('btn-next');
-  prevBtn.style.visibility = currentQ === 0 ? 'hidden' : 'visible';
-  if (currentQ === QUESTIONS.length - 1) {
-    nextBtn.textContent = 'Finish Exam →';
-    nextBtn.onclick = () => showResults();
-  } else {
-    nextBtn.textContent = 'Next →';
-    nextBtn.onclick = () => goQ(1);
-  }
-  document.getElementById('q-counter').textContent = `${currentQ+1} / ${QUESTIONS.length}`;
-
-  updateSecNav();
-
-  // Section header
-  let html = `
-    <div class="section-strip" style="background:${col}18;">
-      <div class="strip-icon" style="background:${col}22;">${sec.label.split(' ')[0]}</div>
-      <div>
-        <div class="strip-title" style="color:${col};">${sec.label.split(' ').slice(1).join(' ')}</div>
-        <div class="strip-sub" style="color:${col};">${q.pts} points · ${q.tag}</div>
-      </div>
-    </div>
-  `;
-
-  // Context box
-  if (q.context) {
-    html += `<div class="q-context"><strong>Context:</strong> ${q.context}</div>`;
-  }
-
-  // Question meta
-  html += `
-    <div class="q-meta">
-      <span class="q-tag" style="background:${col}18;color:${col};">${q.tag}</span>
-      <span class="q-pts">${q.pts} pts</span>
-    </div>
-  `;
-
-  // Question text (support bold/line breaks)
-  const qFormatted = q.question.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-  html += `<p class="q-text">${qFormatted}</p>`;
-
-  // Textarea
-  const saved = answers[currentQ] || '';
-  html += `
-    <div class="answer-wrap">
-      <textarea id="ans-ta" placeholder="${q.placeholder || 'Write your answer here...'}" oninput="saveAnswer(this)">${saved}</textarea>
-      <div class="char-count" id="char-count">${saved.length} characters</div>
-    </div>
-  `;
-
-  // Reveal model answer button
-  const revealed = modelRevealed[currentQ];
-  html += `
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
-      <button class="btn btn-secondary btn-sm" onclick="revealModel(${currentQ})" id="reveal-btn-${currentQ}">
-        ${revealed ? 'Model Answer (shown)' : 'Reveal Model Answer'}
-      </button>
-    </div>
-  `;
-
-  // Model answer (if revealed)
-  if (revealed) {
-    html += buildModelAnswer(q, col);
-  }
-
-  area.innerHTML = html;
-  area.classList.remove('fade-in');
-  void area.offsetWidth;
-  area.classList.add('fade-in');
-}
-
-function saveAnswer(el) {
-  answers[currentQ] = el.value;
-  document.getElementById('char-count').textContent = el.value.length + ' characters';
-}
-
-function revealModel(idx) {
-  modelRevealed[idx] = true;
-  renderQ();
-  // Scroll to model answer
-  setTimeout(() => {
-    const ma = document.querySelector('.model-answer');
-    if (ma) { ma.scrollIntoView({behavior:'smooth',block:'start'}); ma.classList.add('open'); }
-  }, 100);
-}
-
-function buildModelAnswer(q, col) {
-  const m = q.model;
-  let html = `<div class="model-answer open" id="ma-${q.id}">
-    <div class="ma-header" onclick="toggleMA('${q.id}')">
-      <div class="ma-header-left">
-        <span class="ma-badge">Model Answer</span>
-        <span class="ma-title">${q.tag}</span>
-      </div>
-      <span class="ma-arrow">▲</span>
-    </div>
-    <div class="ma-body">`;
-
-  // Overview
-  html += `<div class="ma-section">
-    <div class="ma-section-title">Examiner's Note</div>
-    <div class="ma-text">${m.overview}</div>
-  </div>
-  <div class="divider"></div>`;
-
-  // Answer
-  html += `<div class="ma-section">
-    <div class="ma-section-title">Model Answer</div>
-    <div class="ma-text">${m.answer}</div>
-  </div>
-  <div class="divider"></div>`;
-
-  // Rubric
-  html += `<div class="ma-section">
-    <div class="ma-section-title">Marking Rubric</div>
-    <div class="rubric-grid">`;
-  m.rubric.forEach(r => {
-    html += `<div class="rubric-item" style="border-color:${col};">
-      <div class="ri-label">${r.label}</div>
-      <div class="ri-text">${r.text}</div>
-    </div>`;
-  });
-  html += `</div></div>`;
-
-  // Key concepts
-  html += `<div class="divider"></div>
-  <div class="ma-section">
-    <div class="ma-section-title">Key Concepts</div>
-    <div class="key-concepts">`;
-  m.concepts.forEach(c => {
-    html += `<span class="concept-chip">${c}</span>`;
-  });
-  html += `</div></div>`;
-
-  // Self-assess
-  html += `<div class="self-assess">
-    <span></span>
-    <div><strong>Self-Assessment Check:</strong> ${m.selfAssess}</div>
-  </div>`;
-
-  html += `</div></div>`;
-  return html;
-}
-
-function toggleMA(id) {
-  const ma = document.getElementById(`ma-${id}`);
-  if (ma) ma.classList.toggle('open');
-}
-
-function goQ(dir) {
-  // Save current answer
-  const ta = document.getElementById('ans-ta');
-  if (ta) answers[currentQ] = ta.value;
-
-  currentQ = Math.max(0, Math.min(QUESTIONS.length-1, currentQ+dir));
-  renderQ();
-}
-
-// ═══════════════════════════
-// RESULTS
-// ═══════════════════════════
-function showResults() {
-  // Save last answer
-  const ta = document.getElementById('ans-ta');
-  if (ta) answers[currentQ] = ta.value;
-
-  clearInterval(timerInterval);
-
-  const timeSpent = 7200 - secondsLeft;
-  const answeredCount = Object.keys(answers).filter(k => answers[k] && answers[k].trim().length > 0).length;
-  const revealedCount = Object.keys(modelRevealed).length;
-
-  // Score display
-  const scoreRow = document.getElementById('score-row');
-  scoreRow.innerHTML = `
-    <div class="score-tile">
-      <div class="st-num">${answeredCount}</div>
-      <div class="st-label">Questions Answered</div>
-    </div>
-    <div class="score-tile">
-      <div class="st-num">${revealedCount}</div>
-      <div class="st-label">Model Answers Revealed</div>
-    </div>
-    <div class="score-tile accent">
-      <div class="st-num">${fmtTime(timeSpent)}</div>
-      <div class="st-label">Time Used</div>
-    </div>
-  `;
-
-  // Badge
-  const pct = answeredCount / QUESTIONS.length;
-  let badge;
-  if (pct >= 0.9) badge = { icon:'', name:'Chief Marketing Officer', desc:'Outstanding commitment — all questions attempted. Review the model answers carefully to identify any gaps before the real exam.' };
-  else if (pct >= 0.7) badge = { icon:'', name:'Senior Brand Manager', desc:'Strong effort. Make sure to revisit the sections you skipped and compare your answers to the model answers.' };
-  else if (pct >= 0.4) badge = { icon:'', name:'Marketing Analyst', desc:'Good start. The 4Ps demand practice — work through the model answers for every question you attempted.' };
-  else badge = { icon:'', name:'Marketing Student', desc:'It is worth retaking this exam under timed conditions. The model answers are your best revision resource.' };
-
-  document.getElementById('final-badge').innerHTML = `
-    <div class="fb-icon">${badge.icon}</div>
-    <div class="fb-name">${badge.name}</div>
-    <div class="fb-desc">${badge.desc}</div>
-  `;
-
-  // Review by section
-  const rv = document.getElementById('review-area');
-  rv.innerHTML = '';
-
-  SECTIONS.forEach(sec => {
-    const qs = QUESTIONS.filter(q => q.section === sec.id);
-    if (!qs.length) return;
-
-    const secDiv = document.createElement('div');
-    secDiv.className = 'review-sec';
-    secDiv.innerHTML = `<div class="review-sec-title">${sec.label}</div>`;
-
-    qs.forEach(q => {
-      const qIdx = QUESTIONS.indexOf(q);
-      const answered = answers[qIdx] && answers[qIdx].trim().length > 0;
-      const revealed = modelRevealed[qIdx];
-      const col = sec.color;
-
-      const item = document.createElement('div');
-      item.className = 'review-item';
-      item.id = `ri-${q.id}`;
-
-      item.innerHTML = `
-        <button class="review-toggle" onclick="toggleReview('${q.id}')">
-          <span class="rt-dot ${answered ? 'rt-done' : 'rt-skip'}"></span>
-          <span><strong>Q${qIdx+1} (${q.pts}pts):</strong> ${q.tag}</span>
-          <span class="review-arrow-r">▼</span>
-        </button>
-        <div class="review-body" id="rrb-${q.id}">
-          ${answered ? `
-            <div style="margin-bottom:12px;">
-              <div style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${col};margin-bottom:6px;">Your Answer</div>
-              <div style="font-size:13.5px;line-height:1.65;color:var(--text2);background:var(--off);border-radius:10px;padding:14px 16px;white-space:pre-wrap;">${(answers[qIdx]||'').replace(/</g,'&lt;')}</div>
-            </div>
-          ` : '<p style="font-size:13px;color:var(--grey-mid);font-style:italic;margin-bottom:12px;">No answer written.</p>'}
-          ${buildModelAnswer(q, col)}
-        </div>
-      `;
-      secDiv.appendChild(item);
-    });
-
-    rv.appendChild(secDiv);
-  });
-
-  showScreen('s-results');
-}
-
-function toggleReview(id) {
-  const item = document.getElementById(`ri-${id}`);
-  if (item) item.classList.toggle('open');
-}
-
-function restartExam() {
-  currentQ = 0;
-  answers = {};
-  modelRevealed = {};
-  startExam();
-}
+$('back').addEventListener('click',()=>{ state.i=0; show('exam'); render(); });
+$('restart').addEventListener('click',()=>{ Object.assign(state,{i:0,answers:{},revealed:{},checks:{},left:LIMIT,running:false}); save(); $('clock').textContent=fmt(LIMIT); show('start'); });
 </script>
-</body>
-</html>
+
+</body></html>
